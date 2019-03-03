@@ -9,16 +9,16 @@ namespace Navigation.DataAccess.Collections
     {
         #region Members
         [BsonElement("name")]
-        public string cityName { get; set; }
+        public string CityName { get; set; }
 
         [BsonElement("latitude")]
-        public double latitude { get; set; }
+        public double Latitude { get; set; }
 
         [BsonElement("longitude")]
-        public double longitude { get; set; }
+        public double Longitude { get; set; }
 
         [BsonElement("residence")]
-        public bool isResidence { get; set; }
+        public bool IsResidence { get; set; }
 
         #endregion
 

@@ -31,10 +31,10 @@ namespace Navigation.Business.Logic.Implementations
             {             
                 var @city = new Cities
                 {
-                    cityName = cities.cityName,
-                    latitude = cities.latitude,
-                    longitude = cities.longitude,
-                    isResidence = cities.isResidence
+                    CityName = cities.CityName,
+                    Latitude = cities.Latitude,
+                    Longitude = cities.Longitude,
+                    IsResidence = cities.IsResidence
                 };
 
 
@@ -100,10 +100,10 @@ namespace Navigation.Business.Logic.Implementations
                 var @city = new Cities
                 {
 
-                    cityName = cities.cityName,
-                    latitude = cities.latitude,
-                    longitude = cities.longitude,
-                    isResidence = cities.isResidence,
+                    CityName = cities.CityName,
+                    Latitude = cities.Latitude,
+                    Longitude = cities.Longitude,
+                    IsResidence = cities.IsResidence,
                     Id = cityFromDb.Id
                 };
 
