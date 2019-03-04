@@ -8,6 +8,7 @@ namespace Navigation.DataAccess.Collections
 {
     public class BaseCollection
     {
+
         #region Members
         /* designate this property as the document's primary key */
         [BsonId]
@@ -16,12 +17,7 @@ namespace Navigation.DataAccess.Collections
         /* the attribute's value represents the property name in the MongoDB collection */
         [BsonElement("_id")]
         public string Id { get; set; }
-
         #endregion
-
-
-        
-
 
     }
 }

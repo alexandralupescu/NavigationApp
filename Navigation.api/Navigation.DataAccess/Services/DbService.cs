@@ -10,15 +10,14 @@ namespace Navigation.DataAccess.Services
 {
     public class DbService<T> : IDbService<T> where T : BaseCollection
     {
-        #region Members
 
+        #region Members
         /* MongoCollection object representing the collection */
         private readonly IMongoCollection<T> _collection;
         
         /* represents the MongoDB connection string parameters */
         private readonly string _dbHost;
         private readonly string _dbName;
-
         #endregion
 
         #region Public Methods
@@ -115,17 +114,14 @@ namespace Navigation.DataAccess.Services
                 return actionResult.IsAcknowledged
                     && actionResult.ModifiedCount > 0;
 
-
             }
-
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in DbService - UpdateAsync(document,id) method!"), exception);
+                    string.Format("Error in DbService - UpdateAsync(document) method!"), exception);
             }
         }
-
-
         #endregion
+
     }
 }

@@ -13,6 +13,7 @@ namespace Navigation.api.Controllers
     [ApiController]
     public class CitiesController : ControllerBase
     {
+
         #region Members
         /* used to access the data from the Business layer */
         private readonly ICitiesLogic _citiesLogic;
@@ -41,7 +42,7 @@ namespace Navigation.api.Controllers
             }
         }
 
-        /* GET (by name) method */
+        /* GET (by id) method */
         [HttpGet("{id:length(24)}")]
         public async Task<IActionResult> Get(string id)
         {
@@ -53,7 +54,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - Get(cityName) method!"), exception);
+                   string.Format("Error in CitiesController - Get(id) method!"), exception);
             }
         }
 
@@ -107,7 +108,7 @@ namespace Navigation.api.Controllers
                    string.Format("Error in CitiesController - Put(city,id) method!"), exception);
             }
         }
-
         #endregion
+
     }
 }

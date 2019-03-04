@@ -17,8 +17,5 @@ namespace Navigation.Business.Models
         public bool IsResidence { get; set; }
         #endregion
 
-
-
-
     }
 }

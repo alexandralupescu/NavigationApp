@@ -5,8 +5,10 @@ using System.Text;
 
 namespace Navigation.DataAccess.Collections
 {
+   
     public class Cities : BaseCollection
     {
+
         #region Members
         [BsonElement("name")]
         public string CityName { get; set; }
@@ -19,12 +21,7 @@ namespace Navigation.DataAccess.Collections
 
         [BsonElement("residence")]
         public bool IsResidence { get; set; }
-
         #endregion
-
-
-
-
 
     }
 }

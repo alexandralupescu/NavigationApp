@@ -13,6 +13,7 @@ namespace Navigation.Business.Logic.Implementations
    
     public class CitiesLogic : ICitiesLogic
     {
+
         #region Members
         /* used to access methods from DbService class */
         private readonly IDbService<Cities> _cityService;
@@ -62,7 +63,6 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
-
         /* returns all cities from Cities collection */
         public async Task<IEnumerable<Cities>> GetAllCitiesAsync()
         {
@@ -91,6 +91,7 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
+        /* replaces the city document matching the provided search criteria with the provided object */
         public async Task<bool> UpdateCityAsync(CitiesModel cities,string id)
         {
             try
@@ -117,10 +118,7 @@ namespace Navigation.Business.Logic.Implementations
                    string.Format("Error in CitiesLogic - UpdateCityAsync(cities,id) method!"), exception);
             }
         }
-
-
-
-
         #endregion
+
     }
 }

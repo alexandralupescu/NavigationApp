@@ -28,8 +28,10 @@ namespace Navigation.api
 
             /* service registration is necessary to support constructor injection in consuming classes. */
             services.AddScoped<IDbService<Cities>, DbService<Cities>>();
+            services.AddScoped<IDbService<Distances>, DbService<Distances>>();
+
             services.AddTransient(typeof(ICitiesLogic), typeof(CitiesLogic));
-            
+            services.AddTransient(typeof(IDistancesLogic), typeof(DistancesLogic));
 
 
             /* Swagger option configuration: setting name and version */
