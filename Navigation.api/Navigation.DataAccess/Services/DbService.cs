@@ -42,6 +42,7 @@ namespace Navigation.DataAccess.Services
             try
             {
                 await _collection.InsertOneAsync(document);
+                Console.WriteLine(document.ToString());
             }
             catch (Exception exception)
             {
@@ -88,7 +89,7 @@ namespace Navigation.DataAccess.Services
         {
             try
             {
-                FilterDefinition<T> filter = Builders<T>.Filter.Eq("Id", id);
+                FilterDefinition<T> filter = Builders<T>.Filter.Eq(d => d.Id, id);
                 return _collection
                         .Find(filter)
                         .FirstOrDefaultAsync();

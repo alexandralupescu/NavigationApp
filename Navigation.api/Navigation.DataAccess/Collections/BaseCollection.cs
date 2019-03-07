@@ -15,9 +15,14 @@ namespace Navigation.DataAccess.Collections
         /* allow passing the parameter as type string instead of ObjectId */
         [BsonRepresentation(BsonType.ObjectId)]
         /* the attribute's value represents the property name in the MongoDB collection */
+        /* using automatic properties */
         [BsonElement("_id")]
         public string Id { get; set; }
         #endregion
+
+      
+
+
 
     }
 }

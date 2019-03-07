@@ -21,7 +21,7 @@ namespace Navigation.DataAccess.Collections
 
         [BsonElement("residence")]
         public bool IsResidence { get; set; }
-        #endregion
+        #endregion    
 
     }
 }
