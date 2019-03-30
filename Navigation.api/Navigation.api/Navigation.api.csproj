@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Navigation.AStar\Navigation.AStar.csproj" />
     <ProjectReference Include="..\Navigation.Business\Navigation.Business.csproj" />
     <ProjectReference Include="..\Navigation.DataAccess\Navigation.DataAccess.csproj" />
   </ItemGroup>

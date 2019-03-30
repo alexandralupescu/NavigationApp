@@ -1,15 +1,25 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
 namespace Navigation.DataAccess.Collections
 {
-   
+    /// <summary>
+    /// Representation of Cities collection from the database that inherited BaseCollection class.
+    /// </summary>
+    /// <remarks>
+    /// Cities collection keeps following information: 
+    ///     - <b>CityName</b> represents the name of the city;
+    ///     - geographic coordinates: <b>Latitude</b> and <b>Longitude/b>; 
+    ///     - <b>IsResidence</b> tests if a city is a residence of a county.
+    ///     - <b>County</b> represents forming the city chief unit of local administration.
+    /// </remarks>
     public class Cities : BaseCollection
     {
 
-        #region Members
+        #region Public Properties
         [BsonElement("name")]
         public string CityName { get; set; }
 
@@ -21,7 +31,10 @@ namespace Navigation.DataAccess.Collections
 
         [BsonElement("residence")]
         public bool IsResidence { get; set; }
-        #endregion    
+
+        [BsonElement("county")]
+        public string County { get; set; }
+        #endregion
 
     }
 }

@@ -1,4 +1,5 @@
 ﻿using MongoDB.Bson;
+using MongoDB.Driver;
 using Navigation.Business.Logic.Interfaces;
 using Navigation.Business.Models;
 using Navigation.DataAccess.Collections;
@@ -10,32 +11,50 @@ using System.Threading.Tasks;
 
 namespace Navigation.Business.Logic.Implementations
 {
-   
+ 
+    /// <summary>
+    /// CitiesLogic implements the ICitiesLogic interface and calls the methods from DBService class.
+    /// </summary>
+    /// <remarks>
+    /// BLL (Business Logic Layer) serves as an intermediary layer for data exchange between the presentation layer and DAL (Data Access Layer).
+    /// </remarks>
     public class CitiesLogic : ICitiesLogic
     {
 
-        #region Members
-        /* used to access methods from DbService class */
+        #region Private Members
+        /// <summary>
+        /// Used to access methods from DbService class.
+        /// </summary>
         private readonly IDbService<Cities> _cityService;
         #endregion
 
-        #region Public Methods
+        #region Constructors
+        /// <summary>
+        /// Constructor that contains the instance of an IDBService object.
+        /// </summary>
+        /// <param name="cityService">Instance of Cities object</param>
         public CitiesLogic(IDbService<Cities> cityService)
         {
             _cityService = cityService;
         }
+        #endregion
 
-        /* inserts a new city in Cities collection */
+        #region Public Methods
+        /// <summary>
+        /// Inserts a new city in Cities collection.
+        /// </summary>
+        /// <param name="cities">Document that will be submited in Cities collection.</param>
         public async Task CreateCityAsync(CitiesModel cities)
         {
             try
-            {             
+            {
                 var @city = new Cities
                 {
                     CityName = cities.CityName,
                     Latitude = cities.Latitude,
                     Longitude = cities.Longitude,
-                    IsResidence = cities.IsResidence
+                    IsResidence = cities.IsResidence,
+                    County = cities.County
                 };
 
 
@@ -48,7 +67,10 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
-        /* deletes a single city document mathcing the provided search criteria */
+        /// <summary>
+        /// Deletes a single city document mathcing the provided search criteria.
+        /// </summary>
+        /// <param name="id">The matching criteria for delete operation.</param>
         public async Task<bool> DeleteCityAsync(string id)
         {
             try
@@ -63,7 +85,9 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
-        /* returns all cities from Cities collection */
+        /// <summary>
+        /// Returns all documents from Cities collection.
+        /// </summary>
         public async Task<IEnumerable<Cities>> GetAllCitiesAsync()
         {
             try
@@ -77,7 +101,10 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
-        /* returns the required city matching the provided search criteria, in this case city id */
+        /// <summary>
+        /// Returns the required city matching the provided search criteria, in this case city <b>id</b>
+        /// </summary>
+        /// <param name="id">The provided search criteria.</param>
         public Task<Cities> GetByCityIdAsync(string id)
         {
             try
@@ -91,7 +118,49 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
-        /* replaces the city document matching the provided search criteria with the provided object */
+        /// <summary>
+        /// Returns the required informations mathcing the provided search criteria, in our case, the start city.
+        /// </summary>
+        /// <param name="startCity">The city from which to start.</param>
+        /// <returns></returns>
+        public async Task<CitiesModel> GetCityByName(string startCity)
+        {
+            try
+            {
+                var saveCity = await _cityService.GetAllAsync();
+                foreach (Cities city in saveCity)
+                {
+                    if (city.CityName.Contains(startCity))
+                    {
+                        var citySave = new CitiesModel
+                        {
+                            CityName = city.CityName,
+                            Latitude = city.Latitude,
+                            Longitude = city.Longitude,
+                            IsResidence = city.IsResidence,
+                            County = city.County
+                        };
+
+                        return citySave;
+                    }
+                }
+
+                return null;
+
+
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                   string.Format("Error in CitiesController - SaveStartCity(startCity) method!"), exception);
+            }
+        }
+
+        /// <summary>
+        /// Replaces the city document matching the provided search criteria with the provided object.
+        /// </summary>
+        /// <param name="cities">Document that will be updated in Cities collection.</param>
+        /// <param name="id">The provided search criteria.</param>
         public async Task<bool> UpdateCityAsync(CitiesModel cities,string id)
         {
             try
@@ -105,6 +174,7 @@ namespace Navigation.Business.Logic.Implementations
                     Latitude = cities.Latitude,
                     Longitude = cities.Longitude,
                     IsResidence = cities.IsResidence,
+                    County = cities.County,
                     Id = cityFromDb.Id
                 };
 

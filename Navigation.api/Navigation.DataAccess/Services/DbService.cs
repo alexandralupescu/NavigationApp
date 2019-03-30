@@ -8,41 +8,60 @@ using System.Threading.Tasks;
 
 namespace Navigation.DataAccess.Services
 {
+
+    /// <summary>
+    /// Generic DbService class implements the IDbService interface.
+    /// </summary>
+    /// <typeparam name="T">T type will be the specific collection from the database.</typeparam>
     public class DbService<T> : IDbService<T> where T : BaseCollection
     {
 
-        #region Members
-        /* MongoCollection object representing the collection */
+        #region Private Members
+        /// <summary>
+        /// MongoCollection object representing the collection used in methods.
+        /// </summary>
         private readonly IMongoCollection<T> _collection;
-        
-        /* represents the MongoDB connection string parameters */
+
+        /// <summary>
+        /// Represents the MongoDB parameters used for connection.
+        /// </summary>
         private readonly string _dbHost;
         private readonly string _dbName;
         #endregion
 
-        #region Public Methods
+        #region Constructors
+        /// <summary>
+        /// Constructor that contains the instance of an IConfiguration object.
+        /// </summary>
+        /// <param name="configuration">Set of value application configuration properties.</param>
         public DbService(IConfiguration configuration)
         {
-            /* get database hostname to connect to database */
-            this._dbHost = configuration.GetConnectionString("DatabaseHost");
-            /* get database name to access the collections */
-            this._dbName = configuration.GetConnectionString("DatabaseName");
+
+            _dbHost = configuration.GetConnectionString("DatabaseHost");
+            _dbName = configuration.GetConnectionString("DatabaseName");
             
-            /* reads the server instance for performing database operations */
+            /* Reads the server instance for performing database operations. */
             var client = new MongoClient(this._dbHost);
-            /* reads the name of the database */
+
+            /* Reads the name of the database. */
             var database = client.GetDatabase(this._dbName);
-            /* gain access to data in a specific collection */
+
+            /* Gain access to data in a specific collection. */
             _collection = database.GetCollection<T>(typeof(T).Name);
         }
+        #endregion
 
-        /* inserts the provided object as a new document in the collection */
+        #region Public Methods
+        /// <summary>
+        ///  Inserts the provided object as a new document in the collection.
+        /// </summary>
+        /// <param name="document">Document that will be submited in a specific collection.</param>
+        /// <returns>Returns no value, except the awaitable Task. If a record will not be added, it will generate an Exception.</returns>
         public async Task CreateAsync(T document)
         {
             try
             {
                 await _collection.InsertOneAsync(document);
-                Console.WriteLine(document.ToString());
             }
             catch (Exception exception)
             {
@@ -51,7 +70,10 @@ namespace Navigation.DataAccess.Services
             }
         }
 
-        /* deletes a single document matching the provided search crieteria */
+        /// <summary>
+        /// Deletes a single document matching the provided search crieteria.
+        /// </summary>
+        /// <param name="id"><b>id</b> represents the matching criteria for delete operation.</param>
         public async Task<bool> DeleteAsync(string id)
         {
             try
@@ -70,7 +92,9 @@ namespace Navigation.DataAccess.Services
             }
         }
 
-        /* returns all documents in the collection */
+        /// <summary>
+        /// Returns all documents in the collection.
+        /// </summary>
         public async Task<IEnumerable<T>> GetAllAsync()
         {
             try
@@ -84,12 +108,15 @@ namespace Navigation.DataAccess.Services
             }
         }
 
-        /* returns the document matching the provided search criteria, in this case is by id */
+        /// <summary>
+        /// Returns the document matching the provided search criteria, in this case is by <b>id</b>.
+        /// </summary>
+        /// <param name="id"><b>id</b> represents the provided search criteria.</param>
         public Task<T> GetByIdAsync(string id)
         {
             try
             {
-                FilterDefinition<T> filter = Builders<T>.Filter.Eq(d => d.Id, id);
+                FilterDefinition<T> filter = Builders<T>.Filter.Eq(c=> c.Id, id);
                 return _collection
                         .Find(filter)
                         .FirstOrDefaultAsync();
@@ -98,10 +125,16 @@ namespace Navigation.DataAccess.Services
             {
                 throw new Exception(
                     string.Format("Error in DbService - GetByIdAsync(id) method!"), exception);
+                
             }
         }
 
-        /* replaces the single document mathcing the provided search  criteria with provided object */
+        
+        /// <summary>
+        /// Replaces the single document mathcing the provided search criteria with provided object .
+        /// </summary>
+        /// <param name="document">Document that will be updated in a specific collection.</param>
+        /// <returns></returns>
         public async Task<bool> UpdateAsync(T document)
         {
             try

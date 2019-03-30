@@ -7,6 +7,13 @@ using System.Threading.Tasks;
 
 namespace Navigation.Business.Logic.Interfaces
 {
+
+    /// <summary>
+    /// IDistancesLogic interface
+    /// </summary>
+    /// <remarks>
+    /// Get necesarry data from Data Access Layer (DAL) and expose to web API.
+    /// </remarks>
     public interface IDistancesLogic
     {
         Task<IEnumerable<Distances>> GetAllDistancesAsync();
@@ -16,6 +23,8 @@ namespace Navigation.Business.Logic.Interfaces
         Task CreateDistanceAsync(DistancesModel distances);
 
         Task<bool> DeleteDistanceAsync(string id);
+
+        Task<DistancesModel> GetRoadDistanceAsync(string startCity, string destinationCity);
 
         Task<bool> UpdateDistanceAsync(DistancesModel distances, string id);
     }

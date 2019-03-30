@@ -9,29 +9,46 @@ using System.Threading.Tasks;
 
 namespace Navigation.Business.Logic.Implementations
 {
+    /// <summary>
+    /// DistancesLogic implements the IDistancesLogic interface and calls the methods from DBService class.
+    /// </summary>
+    /// <remarks>
+    /// BLL (Business Logic Layer) serves as an intermediary layer for data exchange between the presentation layer and DAL (Data Access Layer).
+    /// </remarks>
     public class DistancesLogic : IDistancesLogic
     {
 
-        #region Members
-        /* used to access methods from DbService class */
+        #region Private Members
+        /// <summary>
+        /// Used to access the data from the Business layer.
+        /// </summary>
         private readonly IDbService<Distances> _distanceService;
         #endregion
 
-        #region Public Methods
+        #region Constructors
+        /// <summary>
+        /// Constructor that contains the instance of an IDBService object.
+        /// </summary>
+        /// <param name="distanceService">instance of Distances object</param>
         public DistancesLogic(IDbService<Distances> distanceService)
         {
             _distanceService = distanceService;
         }
+        #endregion
 
-        /* inserts a new distance in Distances collection */
+        #region Public Methods
+        /// <summary>
+        /// Inserts a new distance in Distances collection.
+        /// </summary>
+        /// <param name="distances">Document that will be submited in Distances collection.</param>
         public async Task CreateDistanceAsync(DistancesModel distances)
         {
             try
             {
                 var @distance = new Distances
                 {
-                    StartName = distances.StartName,
-                    StopName = distances.StopName,
+                    StartCity = distances.StartCity,
+                    DestinationCity = distances.StopName,
                     Distance = distances.Distance,
                     IsRailway = distances.IsRailway
                 };
@@ -46,7 +63,10 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
-        /* deletes a single distance document mathcing the provided search criteria */
+        /// <summary>
+        /// Deletes a single distance document mathcing the provided search criteria.
+        /// </summary>
+        /// <param name="id">The matching criteria for delete operation.</param>
         public async Task<bool> DeleteDistanceAsync(string id)
         {
             try
@@ -61,7 +81,9 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
-        /* returns all distances from Distances collection */
+        /// <summary>
+        /// Returns all distances from Distances collection.
+        /// </summary>
         public async Task<IEnumerable<Distances>> GetAllDistancesAsync()
         {
             try
@@ -75,7 +97,46 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
-        /* returns the required distance matching the provided search criteria, in this case distance id */
+        /// <summary>
+        /// Returns the distance information based on the start and destination city. 
+        /// </summary>
+        /// <param name="startCity">The city from which to start.</param>
+        /// <param name="destinationCity">The city we have to reach.</param>
+        public async Task<DistancesModel> GetRoadDistanceAsync(string startCity, string destinationCity)
+        {
+            try
+            {
+                var saveDistance = await _distanceService.GetAllAsync();
+                foreach (Distances distance in saveDistance)
+                {
+                    if ((distance.StartCity.Contains(startCity)) && (distance.DestinationCity.Contains(destinationCity)))
+                    {
+                        var distanceSave = new DistancesModel
+                        {
+                            Distance = distance.Distance
+                        };
+
+
+                        return distanceSave;
+
+                    }
+                    
+                }
+
+                return null;
+                
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                   string.Format("Error in DistancesLogic - GetRoadDistanceAsync(startCity,destinationCity) method!"), exception);
+            }
+        }
+
+        /// <summary>
+        /// Returns the required distance matching the provided search criteria, in this case distance <b>id</b>. 
+        /// </summary>
+        /// <param name="id">The provided search criteria.</param>
         public Task<Distances> GetByDistanceIdAsync(string id)
         {
             try
@@ -89,7 +150,11 @@ namespace Navigation.Business.Logic.Implementations
             }
         }
 
-        /* replaces the distance document matching the provided search criteria with the provided object */
+        /// <summary>
+        /// Replaces the distance document matching the provided search criteria with the provided object.
+        /// </summary>
+        /// <param name="distances">Document that will be updated in Distances collection.</param>
+        /// <param name="id">The provided search criteria.</param>
         public async Task<bool> UpdateDistanceAsync(DistancesModel distances, string id)
         {
             try
@@ -99,8 +164,8 @@ namespace Navigation.Business.Logic.Implementations
                 var @distance = new Distances
                 {
 
-                    StartName = distances.StartName,
-                    StopName = distances.StopName,
+                    StartCity = distances.StartCity,
+                    DestinationCity = distances.StopName,
                     Distance = distances.Distance,
                     IsRailway = distances.IsRailway,
                     Id = distanceFromDb.Id
