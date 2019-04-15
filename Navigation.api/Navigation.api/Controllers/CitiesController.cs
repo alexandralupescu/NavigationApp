@@ -1,12 +1,22 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using MongoDB.Bson;
-using Navigation.AStar.Implementations;
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        CitiesController.cs                                      *
+ *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
+ *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
+ *  Description: Apply heuristic search algorithms in travel planning     *
+ *                                                                        *
+ *                                                                        *
+ *  This code and information is provided "as is" without warranty of     *
+ *  any kind, either expressed or implied, including but not limited      *
+ *  to the implied warranties of merchantability or fitness for a         *
+ *  particular purpose. You are free to use this source code in your      *
+ *  applications as long as the original copyright notice is included.    *
+ *                                                                        *
+ **************************************************************************/
+using Microsoft.AspNetCore.Mvc;
 using Navigation.Business.Logic.Interfaces;
 using Navigation.Business.Models;
-using Navigation.DataAccess.Collections;
-using Navigation.DataAccess.Services;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Navigation.api.Controllers
@@ -16,7 +26,10 @@ namespace Navigation.api.Controllers
     /// CitiesController is responsible for controlling the way that a user interacts with the application.
     /// </summary>
     /// <remarks>
-    /// A controller contains the flow control logic.
+    /// The Controller is responsible for controlling the application logic and acts as the 
+    /// coordinator between the View and the Model. The Controller receives an input from 
+    /// the users via the View, then processes the user's data with the help of Model and 
+    /// passes the results back to the View.
     /// </remarks>
     [Route("api/[controller]")]
     [ApiController]
@@ -25,7 +38,7 @@ namespace Navigation.api.Controllers
 
         #region Private Members
         /// <summary>
-        /// Used to access the data from the Business layer
+        /// Used to access the data from the Business layer.
         /// </summary>
         private readonly ICitiesLogic _citiesLogic;
         #endregion
@@ -38,7 +51,7 @@ namespace Navigation.api.Controllers
         /// CitiesController has a dependency on ICitiesLogic because it delegates some 
         /// responsabilities to CitiesLogic class.
         /// </remarks>
-        /// <param name="citiesLogic">Used to access the data from the Business layer</param>
+        /// <param name="citiesLogic">Used to access the data from the Business layer.</param>
         public CitiesController(ICitiesLogic citiesLogic,IDistancesLogic distancesLogic)
         {
             _citiesLogic = citiesLogic;
@@ -142,8 +155,8 @@ namespace Navigation.api.Controllers
         /// <remarks>
         /// PUT method updates a document from Cities collection.
         /// </remarks>
-        /// <param name="city">Entity that will be updated in Cities collection</param>
-        /// <param name="id">The matching criteria for update</param>
+        /// <param name="city">Entity that will be updated in Cities collection.</param>
+        /// <param name="id">The matching criteria for update.</param>
         [HttpPut("{id:length(24)}")]
         public async Task<IActionResult> Put([FromBody]CitiesModel city,string id)
         {
@@ -167,7 +180,7 @@ namespace Navigation.api.Controllers
         /// GET method will return to user a specific city that will match the criteria (the name of the city from which to start).
         /// </remarks>
         /// <param name="startCity">The matching criteria for request.</param>
-        [HttpGet,Route("startCity={startCity}")]
+        [HttpGet,Route("{startCity}")]
         public async Task<IActionResult> GetStartCityInfo([FromRoute]string startCity)
         {
             try
@@ -190,7 +203,7 @@ namespace Navigation.api.Controllers
         /// GET method will return to user a specific city that will match the criteria (the name of the city where it will arrive).
         /// </remarks>
         /// <param name="destinationCity">The matching criteria for request.</param>
-        [HttpGet,Route("destinationCity={destinationCity}")]
+        [HttpGet,Route("{destinationCity}")]
         public async Task<IActionResult> GetDestinationCityInfo([FromRoute] string destinationCity)
         {
             try

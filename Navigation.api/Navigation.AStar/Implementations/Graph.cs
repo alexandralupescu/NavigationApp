@@ -1,6 +1,23 @@
-﻿using System;
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        Graph.cs                                                 *
+ *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
+ *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
+ *  Description: Apply heuristic search algorithms in travel planning     *
+ *                                                                        *
+ *                                                                        *
+ *  This code and information is provided "as is" without warranty of     *
+ *  any kind, either expressed or implied, including but not limited      *
+ *  to the implied warranties of merchantability or fitness for a         *
+ *  particular purpose. You are free to use this source code in your      *
+ *  applications as long as the original copyright notice is included.    *
+ *                                                                        *
+ **************************************************************************/
+using Navigation.Business.Logic.Interfaces;
+using Navigation.DataAccess.Collections;
+using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Threading.Tasks;
 
 namespace Navigation.AStar.Implementations
 {
@@ -13,8 +30,9 @@ namespace Navigation.AStar.Implementations
     public class Graph
     {
         #region Private Member Variables
-        // private member variables
-        private NodeList nodes;
+        private NodeList _nodes;
+        private ICitiesLogic _citiesLogic;
+        private IDistancesLogic _distancesLogic;
         #endregion
 
         #region Constructor
@@ -23,7 +41,7 @@ namespace Navigation.AStar.Implementations
         /// </summary>
         public Graph()
         {
-            this.nodes = new NodeList();
+            this._nodes = new NodeList();
         }
 
         /// <summary>
@@ -32,7 +50,7 @@ namespace Navigation.AStar.Implementations
         /// <param name="nodes">The list of nodes to populate the newly created Graph class with.</param>
         public Graph(NodeList nodes)
         {
-            this.nodes = nodes;
+            this._nodes = nodes;
         }
         #endregion
 
@@ -42,7 +60,7 @@ namespace Navigation.AStar.Implementations
         /// </summary>
         public virtual void Clear()
         {
-            nodes.Clear();
+            _nodes.Clear();
         }
 
         #region Adding TNode Methods
@@ -56,24 +74,28 @@ namespace Navigation.AStar.Implementations
         /// <b>ArgumentException</b> exception will be thrown.</remarks>
         public virtual Node AddNode(string key, object data)
         {
-            // Make sure the key is unique
-            if (!nodes.ContainsKey(key))
+            /* Make sure the key is unique. */
+            if (!_nodes.ContainsKey(key))
             {
                 Node n = new Node(key, data);
-                nodes.Add(n);
+                _nodes.Add(n);
                 return n;
             }
             else
+            {
                 throw new ArgumentException("There already exists a node in the graph with key " + key);
+            }            
         }
 
         public virtual Node AddNode(string key, object data, int x, int y)
         {
-            // Make sure the key is unique
-            if (!nodes.ContainsKey(key))
+            /* Make sure the key is unique. */
+            if (!_nodes.ContainsKey(key))
             {
                 Node n = new Node(key, data, x, y);
-                nodes.Add(n);
+
+                _nodes.Add(n);
+
                 return n;
             }
             else
@@ -84,12 +106,12 @@ namespace Navigation.AStar.Implementations
 
         public virtual Node AddNode(string key, object data, double latitude, double longitude)
         {
-            // Make sure the key is unique
-            if (!nodes.ContainsKey(key))
+            /* Make sure the key is unique. */
+            if (!_nodes.ContainsKey(key))
             {
                 Node n = new Node(key, data, latitude, longitude);
-                nodes.Add(n);
 
+                _nodes.Add(n);
 
                 return n;
             }
@@ -107,11 +129,17 @@ namespace Navigation.AStar.Implementations
         /// <b>ArgumentException</b> exception will be thrown.</remarks>
         public virtual void AddNode(Node n)
         {
-            // Make sure this node is unique
-            if (!nodes.ContainsKey(n.Key))
-                nodes.Add(n);
+            /* Make sure the key is unique. */
+            if (!_nodes.ContainsKey(n.Key))
+            {
+                _nodes.Add(n);
+            }
+               
             else
+            {
                 throw new ArgumentException("There already exists a node in the graph with key " + n.Key);
+            }
+               
         }
         #endregion
 
@@ -138,11 +166,17 @@ namespace Navigation.AStar.Implementations
         /// exception is thrown.</remarks>
         public virtual void AddDirectedEdge(string uKey, string vKey, double cost)
         {
-            // get references to uKey and vKey
-            if (nodes.ContainsKey(uKey) && nodes.ContainsKey(vKey))
-                AddDirectedEdge(nodes[uKey], nodes[vKey], cost);
+            /* Get references to uKey and vKey. */
+            if (_nodes.ContainsKey(uKey) && _nodes.ContainsKey(vKey))
+            {
+                AddDirectedEdge(_nodes[uKey], _nodes[vKey], cost);
+            }
+               
             else
+            {
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
+            }
+                
         }
 
         /// <summary>
@@ -167,14 +201,19 @@ namespace Navigation.AStar.Implementations
         /// exception is thrown.</remarks>
         public virtual void AddDirectedEdge(Node u, Node v, double cost)
         {
-            // Make sure u and v are Nodes in this graph
-            if (nodes.ContainsKey(u.Key) && nodes.ContainsKey(v.Key))
-                // add an edge from u -> v
-
+            /* Make sure u and v are Nodes in this graph. */
+            if (_nodes.ContainsKey(u.Key) && _nodes.ContainsKey(v.Key))
+            {
+                /* Add an edge from u -> v. */
                 u.AddDirected(v, cost);
+            }
+                
             else
-                // one or both of the nodes were not found in the graph
+            {
+                /* One or both of the nodes were not found in the graph. */
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
+            }
+               
         }
 
         /// <summary>
@@ -195,11 +234,16 @@ namespace Navigation.AStar.Implementations
         /// exception is thrown.</remarks>
         public virtual void AddUndirectedEdge(string uKey, string vKey, double cost)
         {
-            // get references to uKey and vKey
-            if (nodes.ContainsKey(uKey) && nodes.ContainsKey(vKey))
-                AddUndirectedEdge(nodes[uKey], nodes[vKey], cost);
+            /* Get references to uKey and vKey. */
+            if (_nodes.ContainsKey(uKey) && _nodes.ContainsKey(vKey))
+            {
+                AddUndirectedEdge(_nodes[uKey], _nodes[vKey], cost);
+            }            
             else
+            {
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
+            }
+                
         }
 
         /// <summary>
@@ -220,16 +264,19 @@ namespace Navigation.AStar.Implementations
         /// exception is thrown.</remarks>
         public virtual void AddUndirectedEdge(Node u, Node v, int cost)
         {
-            // Make sure u and v are Nodes in this graph
-            if (nodes.ContainsKey(u.Key) && nodes.ContainsKey(v.Key))
+            /* Make sure u and v are Nodes in this graph. */
+            if (_nodes.ContainsKey(u.Key) && _nodes.ContainsKey(v.Key))
             {
-                // Add an edge from u -> v and from v -> u
+                /* Add an edge from u -> v and from v -> u. */
                 u.AddDirected(v, cost);
                 v.AddDirected(u, cost);
             }
             else
-                // one or both of the nodes were not found in the graph
+            {
+                /* One or both of the nodes were not found in the graph. */
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
+            }
+                
         }
 
         /// <summary>
@@ -240,16 +287,20 @@ namespace Navigation.AStar.Implementations
         /// exception is thrown.</remarks>
         public virtual void AddUndirectedEdge(Node u, Node v, double cost)
         {
-            // Make sure u and v are Nodes in this graph
-            if (nodes.ContainsKey(u.Key) && nodes.ContainsKey(v.Key))
+            /* Make sure u and v are Nodes in this graph. */
+            if (_nodes.ContainsKey(u.Key) && _nodes.ContainsKey(v.Key))
             {
-                // Add an edge from u -> v and from v -> u
+                /* Add an edge from u -> v and from v -> u. */
                 u.AddDirected(v, cost);
                 v.AddDirected(u, cost);
             }
-            else
-                // one or both of the nodes were not found in the graph
+           else
+           {
+
+                /* One or both of the nodes were not found in the graph. */
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
+
+           }
         }
 
         #endregion
@@ -272,7 +323,7 @@ namespace Navigation.AStar.Implementations
         /// <returns><b>True</b> if a node with key <b>key</b> exists in the graph, <b>False</b> otherwise.</returns>
         public virtual bool Contains(string key)
         {
-            return nodes.ContainsKey(key);
+            return _nodes.ContainsKey(key);
         }
         #endregion
         #endregion
@@ -285,7 +336,7 @@ namespace Navigation.AStar.Implementations
         {
             get
             {
-                return nodes.Count;
+                return _nodes.Count;
             }
         }
 
@@ -296,7 +347,7 @@ namespace Navigation.AStar.Implementations
         {
             get
             {
-                return this.nodes;
+                return this._nodes;
             }
         }
         #endregion

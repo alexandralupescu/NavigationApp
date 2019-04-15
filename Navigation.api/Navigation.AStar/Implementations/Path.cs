@@ -1,7 +1,20 @@
-﻿using System;
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        Path.cs                                                  *
+ *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
+ *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
+ *  Description: Apply heuristic search algorithms in travel planning     *
+ *                                                                        *
+ *                                                                        *
+ *  This code and information is provided "as is" without warranty of     *
+ *  any kind, either expressed or implied, including but not limited      *
+ *  to the implied warranties of merchantability or fitness for a         *
+ *  particular purpose. You are free to use this source code in your      *
+ *  applications as long as the original copyright notice is included.    *
+ *                                                                        *
+ **************************************************************************/
 using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Navigation.AStar.Implementations
 {
@@ -46,7 +59,7 @@ namespace Navigation.AStar.Implementations
         /// <summary>
         /// Method that will add in the list one node.
         /// </summary>
-        /// <param name="step">The Node object that will contain all the additional information. </param>
+        /// <param name="step">The Node object that will contain all the additional information.</param>
         /// <param name="stepCost">The cost of the node.</param>
         public Path<Node> AddStep(Node step, double stepCost)
         {

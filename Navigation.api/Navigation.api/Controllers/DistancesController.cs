@@ -1,12 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        DistancesController.cs                                   *
+ *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
+ *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
+ *  Description: Apply heuristic search algorithms in travel planning     *
+ *                                                                        *
+ *                                                                        *
+ *  This code and information is provided "as is" without warranty of     *
+ *  any kind, either expressed or implied, including but not limited      *
+ *  to the implied warranties of merchantability or fitness for a         *
+ *  particular purpose. You are free to use this source code in your      *
+ *  applications as long as the original copyright notice is included.    *
+ *                                                                        *
+ **************************************************************************/
+using System;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Navigation.Business.Logic.Interfaces;
 using Navigation.Business.Models;
-using Navigation.DataAccess.Collections;
 
 namespace Navigation.api.Controllers
 {
@@ -15,7 +26,10 @@ namespace Navigation.api.Controllers
     /// A controller is responsible for controlling the way that a user interacts with the application.
     /// </summary>
     /// <remarks>
-    /// A controller contains the flow control logic.
+    /// The Controller is responsible for controlling the application logic and acts as the 
+    /// coordinator between the View and the Model. The Controller receives an input from 
+    /// the users via the View, then processes the user's data with the help of Model and 
+    /// passes the results back to the View.
     /// </remarks>
     [Route("api/[controller]")]
     [ApiController]
@@ -166,7 +180,7 @@ namespace Navigation.api.Controllers
         /// </remarks>
         /// <param name="startCity">The city from which to start.</param>
         /// <param name="destinationCity">The city we have to reach.</param>
-        [HttpGet("startCity={startCity}/destinationCity={destinationCity}")]
+        [HttpGet("{startCity}/{destinationCity}")]
         public async Task<IActionResult> GetRoadDistance(string startCity, string destinationCity)
         {
             try

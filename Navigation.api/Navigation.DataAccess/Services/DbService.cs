@@ -1,5 +1,19 @@
-﻿using Microsoft.Extensions.Configuration;
-using MongoDB.Bson;
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        DbService.cs                                             *
+ *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
+ *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
+ *  Description: Apply heuristic search algorithms in travel planning     *
+ *                                                                        *
+ *                                                                        *
+ *  This code and information is provided "as is" without warranty of     *
+ *  any kind, either expressed or implied, including but not limited      *
+ *  to the implied warranties of merchantability or fitness for a         *
+ *  particular purpose. You are free to use this source code in your      *
+ *  applications as long as the original copyright notice is included.    *
+ *                                                                        *
+ **************************************************************************/
+using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
 using Navigation.DataAccess.Collections;
 using System;
@@ -36,10 +50,9 @@ namespace Navigation.DataAccess.Services
         /// <param name="configuration">Set of value application configuration properties.</param>
         public DbService(IConfiguration configuration)
         {
-
             _dbHost = configuration.GetConnectionString("DatabaseHost");
             _dbName = configuration.GetConnectionString("DatabaseName");
-            
+
             /* Reads the server instance for performing database operations. */
             var client = new MongoClient(this._dbHost);
 
@@ -116,7 +129,7 @@ namespace Navigation.DataAccess.Services
         {
             try
             {
-                FilterDefinition<T> filter = Builders<T>.Filter.Eq(c=> c.Id, id);
+                FilterDefinition<T> filter = Builders<T>.Filter.Eq(c => c.Id, id);
                 return _collection
                         .Find(filter)
                         .FirstOrDefaultAsync();
@@ -125,13 +138,13 @@ namespace Navigation.DataAccess.Services
             {
                 throw new Exception(
                     string.Format("Error in DbService - GetByIdAsync(id) method!"), exception);
-                
+
             }
         }
 
-        
+
         /// <summary>
-        /// Replaces the single document mathcing the provided search criteria with provided object .
+        /// Replaces the single document mathcing the provided search criteria with provided object.
         /// </summary>
         /// <param name="document">Document that will be updated in a specific collection.</param>
         /// <returns></returns>
@@ -139,8 +152,7 @@ namespace Navigation.DataAccess.Services
         {
             try
             {
-                ReplaceOneResult actionResult
-                = await _collection
+                ReplaceOneResult actionResult = await _collection
                                 .ReplaceOneAsync(d => d.Id.Equals(document.Id)
                                         , document
                                         , new UpdateOptions { IsUpsert = true });

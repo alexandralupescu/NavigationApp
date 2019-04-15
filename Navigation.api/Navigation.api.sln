@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Navigation.DataAccess", "Na
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Navigation.Business", "Navigation.Business\Navigation.Business.csproj", "{BB57FE91-ADB2-4663-B8D7-E0DEFEF3C520}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Navigation.AStar", "Navigation.AStar\Navigation.AStar.csproj", "{54F2EC4F-376B-43C6-ADF0-8109EBB43CD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Navigation.Algorithm", "Navigation.AStar\Navigation.Algorithm.csproj", "{54F2EC4F-376B-43C6-ADF0-8109EBB43CD6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

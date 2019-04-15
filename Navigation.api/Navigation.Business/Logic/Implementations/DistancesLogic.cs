@@ -1,10 +1,24 @@
-﻿using Navigation.Business.Logic.Interfaces;
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        DistancesLogic.cs                                        *
+ *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
+ *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
+ *  Description: Apply heuristic search algorithms in travel planning     *
+ *                                                                        *
+ *                                                                        *
+ *  This code and information is provided "as is" without warranty of     *
+ *  any kind, either expressed or implied, including but not limited      *
+ *  to the implied warranties of merchantability or fitness for a         *
+ *  particular purpose. You are free to use this source code in your      *
+ *  applications as long as the original copyright notice is included.    *
+ *                                                                        *
+ **************************************************************************/
+using Navigation.Business.Logic.Interfaces;
 using Navigation.Business.Models;
 using Navigation.DataAccess.Collections;
 using Navigation.DataAccess.Services;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Navigation.Business.Logic.Implementations
@@ -29,7 +43,7 @@ namespace Navigation.Business.Logic.Implementations
         /// <summary>
         /// Constructor that contains the instance of an IDBService object.
         /// </summary>
-        /// <param name="distanceService">instance of Distances object</param>
+        /// <param name="distanceService">Instance of Distances object.</param>
         public DistancesLogic(IDbService<Distances> distanceService)
         {
             _distanceService = distanceService;

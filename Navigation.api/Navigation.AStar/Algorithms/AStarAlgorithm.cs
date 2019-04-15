@@ -1,11 +1,23 @@
-﻿using MongoDB.Bson.IO;
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        AStarAlgorithm.cs                                        *
+ *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
+ *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
+ *  Description: Apply heuristic search algorithms in travel planning     *
+ *                                                                        *
+ *                                                                        *
+ *  This code and information is provided "as is" without warranty of     *
+ *  any kind, either expressed or implied, including but not limited      *
+ *  to the implied warranties of merchantability or fitness for a         *
+ *  particular purpose. You are free to use this source code in your      *
+ *  applications as long as the original copyright notice is included.    *
+ *                                                                        *
+ **************************************************************************/
 using Navigation.Business.Logic.Interfaces;
-using Navigation.Business.Models;
 using Navigation.DataAccess.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Navigation.AStar.Implementations
@@ -36,22 +48,16 @@ namespace Navigation.AStar.Implementations
             _distancesLogic = distancesLogic;
         }
         #endregion
-
-        #region Public Methods
         /// <summary>
-        /// Method that is responsible for assembling the A* pathfinding algorithm.
+        /// Method that is responsible for creating the graph. 
         /// </summary>
-        /// <param name="startCity">The city from which the user will start.</param>
-        /// <param name="destinationCity">The city which user will arrive.</param>
+        /// <param name="graph"></param>
         /// <returns></returns>
-        public async Task<List<string>> ResolveAlgorithm(string startCity, string destinationCity)
+        public async virtual Task CreateGraph(Graph graph)
         {
-            /* Creating the graph. */
-            Graph graph = new Graph();
-
             /* Fills a Graph with Romania map information. */
             /* The Graph contains Nodes that represents Cities of Romania. */
-            IEnumerable<Cities> cities = await _citiesLogic.GetAllCitiesAsync();    
+            IEnumerable<Cities> cities = await _citiesLogic.GetAllCitiesAsync();
             foreach (Cities cityVar in cities)
             {
                 Node cityNode = new Node(cityVar.CityName, null, cityVar.Latitude, cityVar.Longitude);
@@ -64,7 +70,22 @@ namespace Navigation.AStar.Implementations
             foreach (Distances distanceVar in distances)
             {
                 graph.AddUndirectedEdge(distanceVar.StartCity, distanceVar.DestinationCity, distanceVar.Distance);
-            }          
+            }
+        }
+
+
+        #region Public Methods
+        /// <summary>
+        /// Method that is responsible for assembling the A* pathfinding algorithm.
+        /// </summary>
+        /// <param name="startCity">The city from which the user will start.</param>
+        /// <param name="destinationCity">The city which user will arrive.</param>
+        /// <returns></returns>
+        public async Task<List<string>> ResolveAlgorithm(string startCity, string destinationCity)
+        {
+            /* Creating the graph. */
+            Graph graph = new Graph();
+            await CreateGraph(graph);         
 
             /* Store the start Node */
             Node start = graph.Nodes[startCity];
@@ -86,12 +107,14 @@ namespace Navigation.AStar.Implementations
 
             /* Return the final result (the road and the distance based on start Node and destination Node) */
             List<string> list = new List<string>();
-            foreach(Path<Node> path in shortestPath.Reverse())
+            foreach (Path<Node> path in shortestPath.Reverse())
             {
                 if (path.PreviousSteps != null)
                 {
                     list.Add(path.PreviousSteps.LastStep.Key);
                     list.Add(path.LastStep.Key);
+                    list.Add(path.PreviousSteps.LastStep.Latitude.ToString());
+                    list.Add(path.PreviousSteps.LastStep.Longitude.ToString());
                     list.Add(path.TotalCost.ToString());
 
                 }
@@ -100,6 +123,40 @@ namespace Navigation.AStar.Implementations
 
             return list;
 
+        }
+
+         
+
+
+        /// <summary>
+        /// Method that will be responsible to resolve A* pathfinding search with an intermediate city.
+        /// </summary>
+        /// <param name="startCity">The city from which the user will start.</param>
+        /// <param name="intermediateCity">An intermediate city that will be chosen by the user.</param>
+        /// <param name="destinationCity">The city which user will arrive.</param>
+        /// <returns></returns>
+        public async Task<List<string>> ResolveAlgorithmIntermediateProblem(string startCity, string intermediateCity, string destinationCity)
+        {
+
+            /* Create an intermediate list between the start city and the intermediate city */
+            List<string> startIntermediateList = await ResolveAlgorithm(startCity, intermediateCity);
+            string auxiliar_cost = startIntermediateList.Last();
+         
+
+            /* Create an intermediate list between the intermediate city and the destination city */
+            List<string> intermediateDestination = await ResolveAlgorithm(intermediateCity, destinationCity);
+            string auxiliar_cost_2 = intermediateDestination.Last();
+
+
+            string totalCost = (Double.Parse(auxiliar_cost) + Double.Parse(auxiliar_cost_2)).ToString();
+
+            List<string> finalList = startIntermediateList.Concat(intermediateDestination).ToList();
+
+            finalList.Add(totalCost);
+
+            return finalList;
+
+            
         }
 
         /// <summary>

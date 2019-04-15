@@ -1,6 +1,19 @@
-﻿using System;
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        Node.cs                                                  *
+ *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
+ *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
+ *  Description: Apply heuristic search algorithms in travel planning     *
+ *                                                                        *
+ *                                                                        *
+ *  This code and information is provided "as is" without warranty of     *
+ *  any kind, either expressed or implied, including but not limited      *
+ *  to the implied warranties of merchantability or fitness for a         *
+ *  particular purpose. You are free to use this source code in your      *
+ *  applications as long as the original copyright notice is included.    *
+ *                                                                        *
+ **************************************************************************/
 using System.Collections.Generic;
-using System.Text;
 
 namespace Navigation.AStar.Implementations
 {
@@ -15,6 +28,11 @@ namespace Navigation.AStar.Implementations
     /// the Node class exposes an AddDirected() method, which adds a directed edge with an (optional) weight to
     /// some other Node.  These methods are marked internal, and are called by the Graph class.
     /// </remarks>
+
+    /// <summary>
+    /// Status cases associated with a node.
+    /// </summary>
+    public enum SEARCHRETURN { BOUND, FOUND, NOT_FOUND };
 
     public partial class Node
     {
@@ -49,9 +67,34 @@ namespace Navigation.AStar.Implementations
         /// Returns the Node's Longitude location on Earth.
         /// </summary>
         public double Longitude { get; set; }
+
+        /// <summary>
+        /// The status of the node.
+        /// </summary>
+        public SEARCHRETURN Status { get; set; }
+
+        /// <summary>
+        /// Represents distance from the start node.
+        /// </summary>
+        public double GCost { get; set; }
+
+        /// <summary>
+        /// Represents distance to goal node.
+        /// </summary>
+        public double HCost { get; set; }
+
+        /// <summary>
+        /// List of nodes being visited (for IDA*).
+        /// </summary>
+        public List<Node> VisitedNodes { get; set; }
         #endregion
 
         #region Constructors
+
+        public Node()
+        {
+            VisitedNodes = new List<Node>();
+        }
         public Node(string key, object data) : this(key, data, null)
         {
         }
