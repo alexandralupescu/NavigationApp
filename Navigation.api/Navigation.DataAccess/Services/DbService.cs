@@ -54,10 +54,10 @@ namespace Navigation.DataAccess.Services
             _dbName = configuration.GetConnectionString("DatabaseName");
 
             /* Reads the server instance for performing database operations. */
-            var client = new MongoClient(this._dbHost);
+            var client = new MongoClient(_dbHost);
 
             /* Reads the name of the database. */
-            var database = client.GetDatabase(this._dbName);
+            var database = client.GetDatabase(_dbName);
 
             /* Gain access to data in a specific collection. */
             _collection = database.GetCollection<T>(typeof(T).Name);

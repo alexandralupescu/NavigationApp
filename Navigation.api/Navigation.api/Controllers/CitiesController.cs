@@ -215,7 +215,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - GetStartCityInfo(startCity) method!"), exception);
+                   string.Format("Error in CitiesController - GetDestinationCityInfo(destinationCity) method!"), exception);
             }
         }
         #endregion

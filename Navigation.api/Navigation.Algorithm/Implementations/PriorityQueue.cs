@@ -17,7 +17,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace Navigation.AStar.Implementations
+namespace Navigation.Algorithm.Implementations
 {
     /// <summary>
     /// Immutable priority queue.
@@ -46,7 +46,6 @@ namespace Navigation.AStar.Implementations
         /// <param name="value">Value of the element.</param>
         public void Enqueue(P priority, V value)
         {
-
             if (!_list.TryGetValue(priority, out Queue<V> q))
             {
                 q = new Queue<V>();
@@ -61,9 +60,9 @@ namespace Navigation.AStar.Implementations
         /// </summary>
         public V Dequeue()
         {
-
             /* Will throw if there isn't any first element. */
             var pair = _list.First();
+
             var v = pair.Value.Dequeue();
 
             /* Nothing left of the top priority. */
@@ -71,7 +70,7 @@ namespace Navigation.AStar.Implementations
             {
                 _list.Remove(pair.Key);
             }
-               
+
             return v;
         }
 

@@ -16,14 +16,14 @@
 using System;
 using System.Collections;
 
-namespace Navigation.AStar.Implementations
+namespace Navigation.Algorithm.Implementations
 {
     /// <summary>
-	/// The NodeList class represents a collection of nodes.  Internally, it uses a Hashtable instance to provide
-	/// fast lookup via a <see cref="Node"/> class's <b>Key</b> value.  The <see cref="Graph"/> class maintains its
-	/// list of nodes via this class.
-	/// </summary>
-	public class NodeList : IEnumerable
+    /// The NodeList class represents a collection of nodes.  Internally, it uses a Hashtable instance to provide
+    /// fast lookup via a <see cref="Node"/> class's <b>Key</b> value.  The <see cref="Graph"/> class maintains its
+    /// list of nodes via this class.
+    /// </summary>
+    public class NodeList : IEnumerable
     {
         #region Private Members
         private Hashtable _data = new Hashtable();

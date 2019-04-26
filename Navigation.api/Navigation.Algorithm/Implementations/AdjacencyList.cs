@@ -1,6 +1,6 @@
 ﻿/**************************************************************************
  *                                                                        *
- *  File:        IHasNeighbours.cs                                        *
+ *  File:        AdjacencyList.cs                                         *
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
@@ -13,16 +13,33 @@
  *  applications as long as the original copyright notice is included.    *
  *                                                                        *
  **************************************************************************/
-using System.Collections.Generic;
+using System.Collections;
 
-namespace Navigation.AStar.Implementations
+namespace Navigation.Algorithm.Implementations
 {
+
     /// <summary>
-    /// Interface used to store neighbours of a Node.
+    /// AdjacencyList maintains a list of neighbors for a particular <see cref="Node"/>.  It is derived from CollectionBase
+    /// and provides a strongly-typed collection of <see cref="EdgeToNeighbor"/> instances.
     /// </summary>
-    /// <typeparam name="N"><b>N</b> Represents one Node and it will return the neighbours list of the current Node.</typeparam>
-    public interface IHasNeighbours<N>
+    public class AdjacencyList : CollectionBase
     {
-        IEnumerable<N> Neighbours { get; }
+        /// <summary>
+        /// Adds a new <see cref="EdgeToNeighbor"/> instance to the AdjacencyList.
+        /// </summary>
+        /// <param name="e">The <see cref="EdgeToNeighbor"/> instance to add.</param>
+        protected internal virtual void Add(EdgeToNeighbor e)
+        {
+            base.InnerList.Add(e);
+        }
+
+        /// <summary>
+        /// Returns a particular <see cref="EdgeToNeighbor"/> instance by index.
+        /// </summary>
+        public virtual EdgeToNeighbor this[int index]
+        {
+            get { return (EdgeToNeighbor)base.InnerList[index]; }
+            set { base.InnerList[index] = value; }
+        }
     }
 }

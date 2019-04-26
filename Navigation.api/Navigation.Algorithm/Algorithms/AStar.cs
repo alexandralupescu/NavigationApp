@@ -1,32 +1,20 @@
-﻿/**************************************************************************
- *                                                                        *
- *  File:        AStarAlgorithm.cs                                        *
- *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
- *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
- *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
- **************************************************************************/
+﻿using Navigation.Algorithm.Implementations;
+using Navigation.Algorithm.Interfaces;
 using Navigation.Business.Logic.Interfaces;
 using Navigation.DataAccess.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 
-namespace Navigation.AStar.Implementations
+namespace Navigation.Algorithm.Algorithms
 {
     /// <summary>
     /// AStarAlgorithm represents the main class that will call the necessary methods to 
     /// run the A* pathfinding search algorithm.
     /// </summary>
-    public class AStarAlgorithm
+    public class AStar
     {
         #region Private Members
         /// <summary>
@@ -42,7 +30,7 @@ namespace Navigation.AStar.Implementations
         /// </summary>
         /// <param name="citiesLogic"></param>
         /// <param name="distancesLogic"></param>
-        public AStarAlgorithm(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic)
+        public AStar(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic)
         {
             _citiesLogic = citiesLogic;
             _distancesLogic = distancesLogic;
@@ -85,7 +73,7 @@ namespace Navigation.AStar.Implementations
         {
             /* Creating the graph. */
             Graph graph = new Graph();
-            await CreateGraph(graph);         
+            await CreateGraph(graph);
 
             /* Store the start Node */
             Node start = graph.Nodes[startCity];
@@ -101,7 +89,7 @@ namespace Navigation.AStar.Implementations
             /* Estimation/Heuristic function (Haversine distance)
              * It tells us the estimated distance between the last node on a proposed path
              * and the destination node.  */
-            double haversineEstimation(Node n) => Haversine.Distance(n, destination, DistanceType.km); 
+            double haversineEstimation(Node n) => Haversine.Distance(n, destination);
 
             Path<Node> shortestPath = FindPath(start, destination, distance, haversineEstimation);
 
@@ -111,10 +99,10 @@ namespace Navigation.AStar.Implementations
             {
                 if (path.PreviousSteps != null)
                 {
-                    list.Add(path.PreviousSteps.LastStep.Key);
-                    list.Add(path.LastStep.Key);
-                    list.Add(path.PreviousSteps.LastStep.Latitude.ToString());
-                    list.Add(path.PreviousSteps.LastStep.Longitude.ToString());
+                    list.Add("Nume: " + path.PreviousSteps.LastStep.Key);
+                    list.Add("Nume: " + path.LastStep.Key);
+                    list.Add("Latitudine " + path.PreviousSteps.LastStep.Key + ": " +  path.PreviousSteps.LastStep.Latitude.ToString());
+                    list.Add("Longitudine " + path.PreviousSteps.LastStep.Key + ": "  + path.PreviousSteps.LastStep.Longitude.ToString());
                     list.Add(path.TotalCost.ToString());
 
                 }
@@ -125,7 +113,6 @@ namespace Navigation.AStar.Implementations
 
         }
 
-         
 
 
         /// <summary>
@@ -135,28 +122,52 @@ namespace Navigation.AStar.Implementations
         /// <param name="intermediateCity">An intermediate city that will be chosen by the user.</param>
         /// <param name="destinationCity">The city which user will arrive.</param>
         /// <returns></returns>
-        public async Task<List<string>> ResolveAlgorithmIntermediateProblem(string startCity, string intermediateCity, string destinationCity)
+        public async Task<List<string>> GetAStarAsync(string startCity, List<string> destinationCity)
         {
 
-            /* Create an intermediate list between the start city and the intermediate city */
-            List<string> startIntermediateList = await ResolveAlgorithm(startCity, intermediateCity);
-            string auxiliar_cost = startIntermediateList.Last();
-         
+            List<string> targetList = new List<string>();
+            List<string> intermediateList = new List<string>();
 
-            /* Create an intermediate list between the intermediate city and the destination city */
-            List<string> intermediateDestination = await ResolveAlgorithm(intermediateCity, destinationCity);
-            string auxiliar_cost_2 = intermediateDestination.Last();
+            int counter = 0;
+            double totalCost = 0;
 
+            try
+            {
 
-            string totalCost = (Double.Parse(auxiliar_cost) + Double.Parse(auxiliar_cost_2)).ToString();
+                if (destinationCity.Count() == 1)
+                {
+                    targetList = await ResolveAlgorithm(startCity, destinationCity.First());
+                    return targetList;
 
-            List<string> finalList = startIntermediateList.Concat(intermediateDestination).ToList();
+                }
+                else
+                {
+                    targetList = await ResolveAlgorithm(startCity, destinationCity.First());
+                    totalCost = Double.Parse(targetList.Last());
 
-            finalList.Add(totalCost);
+                    for (int index = 0; index < destinationCity.Count - 1; ++index)
+                    {
+                        counter = index;
 
-            return finalList;
+                        intermediateList = await ResolveAlgorithm(destinationCity[counter], destinationCity[counter + 1]);
+                        targetList = targetList.Concat(intermediateList).ToList();
 
-            
+                        totalCost += Double.Parse(intermediateList.Last());
+                    }
+
+                    targetList = targetList.Concat(intermediateList).ToList();
+                    targetList.Add(totalCost.ToString());
+
+                    return targetList;
+                }
+            }
+
+            catch(Exception exception)
+            {
+                throw new Exception(
+                   string.Format("Error in GetAStarAsync - GetAStarAsync(destinationCity) method!"), exception);
+            }
+
         }
 
         /// <summary>
@@ -189,13 +200,13 @@ namespace Navigation.AStar.Implementations
                 {
                     continue;
                 }
-                   
+
 
                 if (path.LastStep.Equals(destination))
                 {
                     return path;
                 }
-                    
+
                 closed.Add(path.LastStep);
 
                 foreach (TNode n in path.LastStep.Neighbours)
@@ -214,27 +225,5 @@ namespace Navigation.AStar.Implementations
         #endregion
 
     }
-
-    #region Partial Node class
-    sealed partial class Node : IHasNeighbours<Node>
-    {
-        public IEnumerable<Node> Neighbours
-        {
-            get
-            {
-                List<Node> nodes = new List<Node>();
-
-                foreach (EdgeToNeighbor etn in Neighbors)
-                {
-                    nodes.Add(etn.Neighbor);
-                }
-
-                return nodes;
-            }
-        }
-    }
-
-    #endregion
-
 
 }

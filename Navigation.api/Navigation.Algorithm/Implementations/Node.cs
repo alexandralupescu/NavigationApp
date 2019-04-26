@@ -13,11 +13,11 @@
  *  applications as long as the original copyright notice is included.    *
  *                                                                        *
  **************************************************************************/
+using Navigation.Algorithm.Interfaces;
 using System.Collections.Generic;
 
-namespace Navigation.AStar.Implementations
+namespace Navigation.Algorithm.Implementations
 {
-
     /// <summary>
     /// A Node is uniquely identified by its string Key.  A Node also has a Data property of type object
     /// that can be used to store any extra information associated with the Node. 
@@ -34,7 +34,7 @@ namespace Navigation.AStar.Implementations
     /// </summary>
     public enum SEARCHRETURN { BOUND, FOUND, NOT_FOUND };
 
-    public partial class Node
+    public partial class Node : IHasNeighbours<Node>
     {
 
         #region Public Properties
@@ -118,7 +118,7 @@ namespace Navigation.AStar.Implementations
                 Neighbors = neighbors;
             }
         }
-     
+
         public Node(string key, object data, double latitude, double longitude, AdjacencyList neighbors)
         {
             Key = key;
@@ -171,8 +171,21 @@ namespace Navigation.AStar.Implementations
         {
             Neighbors.Add(e);
         }
+
+        public IEnumerable<Node> Neighbours
+        {
+            get
+            {
+                List<Node> nodes = new List<Node>();
+
+                foreach (EdgeToNeighbor etn in Neighbors)
+                {
+                    nodes.Add(etn.Neighbor);
+                }
+
+                return nodes;
+            }
+        }
         #endregion
     }
-
-
 }

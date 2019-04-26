@@ -14,16 +14,14 @@
  *                                                                        *
  **************************************************************************/
 
-namespace Navigation.AStar.Implementations
+namespace Navigation.Algorithm.Implementations
 {
-
-    /// <summary>
-    /// EdgeToNeighbor represents an edge eminating from one <see cref="Node"/> to its neighbor.  The EdgeToNeighbor
-    /// class, then, contains a reference to the neighbor and the weight of the edge.
-    /// </summary>
     public class EdgeToNeighbor
     {
-
+        /// <summary>
+        /// EdgeToNeighbor represents an edge eminating from one <see cref="Node"/> to its neighbor.  The EdgeToNeighbor
+        /// class, then, contains a reference to the neighbor and the weight of the edge.
+        /// </summary>
         #region Public Properties
         /// <summary>
         /// The weight of the edge.

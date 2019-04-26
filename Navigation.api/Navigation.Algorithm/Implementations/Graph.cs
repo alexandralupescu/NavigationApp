@@ -13,13 +13,10 @@
  *  applications as long as the original copyright notice is included.    *
  *                                                                        *
  **************************************************************************/
-using Navigation.Business.Logic.Interfaces;
-using Navigation.DataAccess.Collections;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
-namespace Navigation.AStar.Implementations
+
+namespace Navigation.Algorithm.Implementations
 {
     /// <summary>
     /// The Graph class represents a graph, which is composed of a collection of nodes and edges.  This Graph class
@@ -31,8 +28,6 @@ namespace Navigation.AStar.Implementations
     {
         #region Private Member Variables
         private NodeList _nodes;
-        private ICitiesLogic _citiesLogic;
-        private IDistancesLogic _distancesLogic;
         #endregion
 
         #region Constructor
@@ -84,7 +79,7 @@ namespace Navigation.AStar.Implementations
             else
             {
                 throw new ArgumentException("There already exists a node in the graph with key " + key);
-            }            
+            }
         }
 
         public virtual Node AddNode(string key, object data, int x, int y)
@@ -134,12 +129,12 @@ namespace Navigation.AStar.Implementations
             {
                 _nodes.Add(n);
             }
-               
+
             else
             {
                 throw new ArgumentException("There already exists a node in the graph with key " + n.Key);
             }
-               
+
         }
         #endregion
 
@@ -171,12 +166,12 @@ namespace Navigation.AStar.Implementations
             {
                 AddDirectedEdge(_nodes[uKey], _nodes[vKey], cost);
             }
-               
+
             else
             {
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
             }
-                
+
         }
 
         /// <summary>
@@ -207,13 +202,13 @@ namespace Navigation.AStar.Implementations
                 /* Add an edge from u -> v. */
                 u.AddDirected(v, cost);
             }
-                
+
             else
             {
                 /* One or both of the nodes were not found in the graph. */
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
             }
-               
+
         }
 
         /// <summary>
@@ -238,12 +233,12 @@ namespace Navigation.AStar.Implementations
             if (_nodes.ContainsKey(uKey) && _nodes.ContainsKey(vKey))
             {
                 AddUndirectedEdge(_nodes[uKey], _nodes[vKey], cost);
-            }            
+            }
             else
             {
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
             }
-                
+
         }
 
         /// <summary>
@@ -276,7 +271,7 @@ namespace Navigation.AStar.Implementations
                 /* One or both of the nodes were not found in the graph. */
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
             }
-                
+
         }
 
         /// <summary>
@@ -294,13 +289,13 @@ namespace Navigation.AStar.Implementations
                 u.AddDirected(v, cost);
                 v.AddDirected(u, cost);
             }
-           else
-           {
+            else
+            {
 
                 /* One or both of the nodes were not found in the graph. */
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
 
-           }
+            }
         }
 
         #endregion

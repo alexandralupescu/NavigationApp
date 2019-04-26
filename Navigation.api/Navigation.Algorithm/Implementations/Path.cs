@@ -16,7 +16,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace Navigation.AStar.Implementations
+namespace Navigation.Algorithm.Implementations
 {
     /// <summary>
     /// Immutable stack of nodes which tracks the total cost of the whole path.
@@ -78,7 +78,7 @@ namespace Navigation.AStar.Implementations
             {
                 yield return p;
             }
-               
+
         }
 
         IEnumerator IEnumerable.GetEnumerator()
