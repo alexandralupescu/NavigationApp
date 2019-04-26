@@ -90,7 +90,6 @@ namespace Navigation.Algorithm.Implementations
         #endregion
 
         #region Constructors
-
         public Node()
         {
             VisitedNodes = new List<Node>();
@@ -172,6 +171,7 @@ namespace Navigation.Algorithm.Implementations
             Neighbors.Add(e);
         }
 
+        #region IEnumerable Properties
         public IEnumerable<Node> Neighbours
         {
             get
@@ -186,6 +186,8 @@ namespace Navigation.Algorithm.Implementations
                 return nodes;
             }
         }
+        #endregion
+
         #endregion
     }
 }

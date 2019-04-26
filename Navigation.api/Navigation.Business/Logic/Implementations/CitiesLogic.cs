@@ -164,7 +164,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - GetCityByName(startCity) method!"), exception);
+                   string.Format("Error in CitiesLogic - GetCityByName(startCity) method!"), exception);
             }
         }
 
