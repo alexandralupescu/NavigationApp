@@ -93,16 +93,29 @@ namespace Navigation.Algorithm.Algorithms
 
             Path<Node> shortestPath = FindPath(start, destination, distance, haversineEstimation);
 
+            List<string> targetList = DisplayPath(shortestPath);
+
+            return targetList;
+
+        }
+
+        /// <summary>
+        /// Method that is responsible for display the final route and total cost.
+        /// </summary>
+        /// <param name="shorthestPath"></param>
+        /// <returns></returns>
+        public List<string> DisplayPath(Path<Node> shorthestPath)
+        {
             /* Return the final result (the road and the distance based on start Node and destination Node) */
             List<string> list = new List<string>();
-            foreach (Path<Node> path in shortestPath.Reverse())
+            foreach (Path<Node> path in shorthestPath.Reverse())
             {
                 if (path.PreviousSteps != null)
                 {
                     list.Add("Nume: " + path.PreviousSteps.LastStep.Key);
                     list.Add("Nume: " + path.LastStep.Key);
-                    list.Add("Latitudine " + path.PreviousSteps.LastStep.Key + ": " +  path.PreviousSteps.LastStep.Latitude.ToString());
-                    list.Add("Longitudine " + path.PreviousSteps.LastStep.Key + ": "  + path.PreviousSteps.LastStep.Longitude.ToString());
+                    list.Add("Latitudine " + path.PreviousSteps.LastStep.Key + ": " + path.PreviousSteps.LastStep.Latitude.ToString());
+                    list.Add("Longitudine " + path.PreviousSteps.LastStep.Key + ": " + path.PreviousSteps.LastStep.Longitude.ToString());
                     list.Add(path.TotalCost.ToString());
 
                 }
@@ -110,10 +123,7 @@ namespace Navigation.Algorithm.Algorithms
             }
 
             return list;
-
         }
-
-
 
         /// <summary>
         /// Method that will be responsible to resolve A* pathfinding search with an intermediate city.
@@ -133,7 +143,6 @@ namespace Navigation.Algorithm.Algorithms
 
             try
             {
-
                 if (destinationCity.Count() == 1)
                 {
                     targetList = await ResolveAlgorithm(startCity, destinationCity.First());
