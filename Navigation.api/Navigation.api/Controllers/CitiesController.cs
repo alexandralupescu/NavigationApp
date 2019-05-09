@@ -52,7 +52,7 @@ namespace Navigation.api.Controllers
         /// responsabilities to CitiesLogic class.
         /// </remarks>
         /// <param name="citiesLogic">Used to access the data from the Business layer.</param>
-        public CitiesController(ICitiesLogic citiesLogic,IDistancesLogic distancesLogic)
+        public CitiesController(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic)
         {
             _citiesLogic = citiesLogic;
 
@@ -158,11 +158,11 @@ namespace Navigation.api.Controllers
         /// <param name="city">Entity that will be updated in Cities collection.</param>
         /// <param name="id">The matching criteria for update.</param>
         [HttpPut("{id:length(24)}")]
-        public async Task<IActionResult> Put([FromBody]CitiesModel city,string id)
+        public async Task<IActionResult> Put([FromBody]CitiesModel city, string id)
         {
             try
-            {          
-                await _citiesLogic.UpdateCityAsync(city,id);
+            {
+                await _citiesLogic.UpdateCityAsync(city, id);
                 return new OkObjectResult(city);
 
             }
@@ -179,45 +179,23 @@ namespace Navigation.api.Controllers
         /// <remarks>
         /// GET method will return to user a specific city that will match the criteria (the name of the city from which to start).
         /// </remarks>
-        /// <param name="startCity">The matching criteria for request.</param>
-        [HttpGet,Route("{startCity}")]
-        public async Task<IActionResult> GetStartCityInfo([FromRoute]string startCity)
+        /// <param name="city">The matching criteria for request.</param>
+        [HttpGet("{city}")]
+        public async Task<IActionResult> GetCityInfo(string city)
         {
             try
             {
-                var getCityInfo = await _citiesLogic.GetCityByName(startCity);
+                var getCityInfo = await _citiesLogic.GetCityByName(city);
                 return new OkObjectResult(getCityInfo);
                 
             }
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - GetStartCityInfo(startCity) method!"), exception);
+                   string.Format("Error in CitiesController - GetCityInfo(startCity) method!"), exception);
             }
         }
-
-        /// <summary>
-        /// The GET method requests a representation of the specified resource matching the provided search criteria.
-        /// </summary>
-        /// <remarks>
-        /// GET method will return to user a specific city that will match the criteria (the name of the city where it will arrive).
-        /// </remarks>
-        /// <param name="destinationCity">The matching criteria for request.</param>
-        [HttpGet,Route("{destinationCity}")]
-        public async Task<IActionResult> GetDestinationCityInfo([FromRoute] string destinationCity)
-        {
-            try
-            {
-                var getCityInfo = await _citiesLogic.GetCityByName(destinationCity);
-                return new OkObjectResult(getCityInfo);
-
-            }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                   string.Format("Error in CitiesController - GetDestinationCityInfo(destinationCity) method!"), exception);
-            }
-        }
+        
         #endregion
 
     }

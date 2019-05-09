@@ -1,6 +1,6 @@
 ﻿/**************************************************************************
  *                                                                        *
- *  File:        AStarController.cs                                       *
+ *  File:        IDAStarController.cs                                     *
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
@@ -20,12 +20,13 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Navigation.Algorithm.Algorithms;
+using Navigation.Business.Logic.Implementations;
 using Navigation.Business.Logic.Interfaces;
 
 namespace Navigation.api.Controllers
 {
     /// <summary>
-    /// AStarController is responsible for controlling the algorithm flow execution.
+    /// IDAStarController is responsible for controlling the algorithm flow execution.
     /// </summary>
     /// <remarks>
     /// The Controller is responsible for controlling the application logic and acts as the 
@@ -35,7 +36,7 @@ namespace Navigation.api.Controllers
     /// </remarks>
     [Route("api/[controller]")]
     [ApiController]
-    public class AStarController : Controller
+    public class IDAStarController : ControllerBase
     {
         #region Private Members
         /// <summary>
@@ -43,7 +44,7 @@ namespace Navigation.api.Controllers
         /// </summary>
         private readonly ICitiesLogic _citiesLogic;
         private readonly IDistancesLogic _distancesLogic;
-        private readonly AStar _aStar;
+        private readonly IDAStar _idaStar;
         #endregion
 
         #region Constructors
@@ -57,11 +58,11 @@ namespace Navigation.api.Controllers
         /// </remarks>
         /// <param name="citiesLogic">Used to access the data from the Business layer.</param>
         /// <param name="distancesLogic">Used to access the data from the Business layer.</param>
-        public AStarController(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic)
+        public IDAStarController(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic)
         {
             _citiesLogic = citiesLogic;
             _distancesLogic = distancesLogic;
-            _aStar = new AStar(_citiesLogic, _distancesLogic);
+            _idaStar = new IDAStar(_citiesLogic, _distancesLogic);
         }
         #endregion
 
@@ -73,17 +74,17 @@ namespace Navigation.api.Controllers
         /// <param name="intermediateCity">An intermediate city that will be chosen by the user.</param>
         /// <param name="destinationCity">The city which user will arrive.</param>
         [HttpGet()]
-        public async Task<IActionResult> GetAStaResult(string startCity, [FromQuery]List<string> destinationCity)
+        public async Task<IActionResult> GetIDAStarResult(string startCity, string destinationCity)
         {
             try
             {
-                List<string> list = await _aStar.GetAStarAsync(startCity, destinationCity);
+                List<string> list = await _idaStar.ResolveIDAStarAlgorithm(startCity, destinationCity);
                 return new OkObjectResult(list);
             }
             catch (Exception exception)
             {
                 throw new Exception(
-                  string.Format("Error in AStarController - GetAStaResult(startCity,destinationCity) method!"), exception);
+                  string.Format("Error in IDAStarController - GetIDAStarResult(startCity,destinationCity) method!"), exception);
             }
 
         }
