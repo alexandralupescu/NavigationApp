@@ -13,12 +13,9 @@
  *  applications as long as the original copyright notice is included.    *
  *                                                                        *
  **************************************************************************/
-using MongoDB.Bson;
 using Navigation.Business.Models;
 using Navigation.DataAccess.Collections;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Navigation.Business.Logic.Interfaces
@@ -40,10 +37,10 @@ namespace Navigation.Business.Logic.Interfaces
 
         Task<bool> DeleteCityAsync(string id);
 
-        Task<CitiesModel> GetCityByName(string startCity);
+        Task<CitiesModel> GetCityByName(string cityName);
 
         Task<bool> UpdateCityAsync(CitiesModel cities,string id);
 
-
+        Task<bool> FindCityNameAsync(string cityName);
     }
 }

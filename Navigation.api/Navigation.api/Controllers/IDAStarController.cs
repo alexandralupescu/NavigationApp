@@ -15,6 +15,7 @@
  **************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -44,7 +45,7 @@ namespace Navigation.api.Controllers
         /// </summary>
         private readonly ICitiesLogic _citiesLogic;
         private readonly IDistancesLogic _distancesLogic;
-        private readonly IDAStar _idaStar;
+        private IDAStar _idaStar;
         #endregion
 
         #region Constructors
@@ -62,7 +63,6 @@ namespace Navigation.api.Controllers
         {
             _citiesLogic = citiesLogic;
             _distancesLogic = distancesLogic;
-            _idaStar = new IDAStar(_citiesLogic, _distancesLogic);
         }
         #endregion
 
@@ -78,6 +78,7 @@ namespace Navigation.api.Controllers
         {
             try
             {
+                _idaStar = new IDAStar(_citiesLogic, _distancesLogic);
                 List<string> list = await _idaStar.ResolveIDAStarAlgorithm(startCity, destinationCity);
                 return new OkObjectResult(list);
             }

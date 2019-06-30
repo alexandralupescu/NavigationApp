@@ -15,16 +15,14 @@
  **************************************************************************/
 using Navigation.Business.Models;
 using Navigation.DataAccess.Collections;
-using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Navigation.Business.Logic.Interfaces
 {
 
     /// <summary>
-    /// IDistancesLogic interface
+    /// IDistancesLogic interface.
     /// </summary>
     /// <remarks>
     /// Get necesarry data from Data Access Layer (DAL) and expose to web API.

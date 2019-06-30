@@ -79,7 +79,7 @@ namespace Navigation.DataAccess.Services
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in DbService - CreateAsync(document) method!"), exception);
+                    string.Format("Error in DbService class - CreateAsync method!"), exception);
             }
         }
 
@@ -101,7 +101,7 @@ namespace Navigation.DataAccess.Services
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in DbService - DeleteAsync(id) method!"), exception);
+                    string.Format("Error in DbService class - DeleteAsync method!"), exception);
             }
         }
 
@@ -117,7 +117,7 @@ namespace Navigation.DataAccess.Services
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in DbService - GetAllAsync() method!"), exception);
+                    string.Format("Error in DbService class - GetAllAsync method!"), exception);
             }
         }
 
@@ -137,11 +137,10 @@ namespace Navigation.DataAccess.Services
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in DbService - GetByIdAsync(id) method!"), exception);
+                    string.Format("Error in DbService class - GetByIdAsync method!"), exception);
 
             }
         }
-
 
         /// <summary>
         /// Replaces the single document mathcing the provided search criteria with provided object.
@@ -164,9 +163,9 @@ namespace Navigation.DataAccess.Services
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in DbService - UpdateAsync(document) method!"), exception);
+                    string.Format("Error in DbService class - UpdateAsync method!"), exception);
             }
-        }
+        }     
         #endregion
 
     }

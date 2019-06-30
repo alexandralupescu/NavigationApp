@@ -36,7 +36,7 @@ namespace Navigation.Algorithm.Implementations
         /// </summary>
         public Graph()
         {
-            this._nodes = new NodeList();
+            _nodes = new NodeList();
         }
 
         /// <summary>
@@ -342,7 +342,7 @@ namespace Navigation.Algorithm.Implementations
         {
             get
             {
-                return this._nodes;
+                return _nodes;
             }
         }
         #endregion

@@ -48,6 +48,7 @@ namespace Navigation.Business.Logic.Implementations
         {
             _distanceService = distanceService;
         }
+
         #endregion
 
         #region Public Methods
@@ -73,7 +74,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                  string.Format("Error in DistancesLogic - CreateDistanceAsync(distances) method!"), exception);
+                  string.Format("Error in DistancesLogic class - CreateDistanceAsync method!"), exception);
             }
         }
 
@@ -91,7 +92,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                  string.Format("Error in DistancesLogic - DeleteDistanceAsync(id) method!"), exception);
+                  string.Format("Error in DistancesLogic class - DeleteDistanceAsync method!"), exception);
             }
         }
 
@@ -107,7 +108,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in DistancesLogic - GetAllDistancesAsync() method!"), exception);
+                    string.Format("Error in DistancesLogic class - GetAllDistancesAsync method!"), exception);
             }
         }
 
@@ -143,7 +144,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in DistancesLogic - GetRoadDistanceAsync(startCity,destinationCity) method!"), exception);
+                   string.Format("Error in DistancesLogic class - GetRoadDistanceAsync method!"), exception);
             }
         }
 
@@ -160,7 +161,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in DistancesLogic - GetByDistanceIdAsync(id) method!"), exception);
+                   string.Format("Error in DistancesLogic class - GetByDistanceIdAsync method!"), exception);
             }
         }
 
@@ -192,7 +193,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in DistancesLogic - UpdateDistanceAsync(distances,id) method!"), exception);
+                   string.Format("Error in DistancesLogic class - UpdateDistanceAsync method!"), exception);
             }
         }
         #endregion

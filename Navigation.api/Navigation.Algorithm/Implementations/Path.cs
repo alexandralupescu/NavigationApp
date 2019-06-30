@@ -53,6 +53,7 @@ namespace Navigation.Algorithm.Implementations
         }
 
         public Path(Node start) : this(start, null, 0) { }
+
         #endregion
 
         #region Public Methods

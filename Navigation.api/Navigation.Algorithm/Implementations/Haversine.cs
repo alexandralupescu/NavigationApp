@@ -37,11 +37,11 @@ namespace Navigation.Algorithm.Implementations
 
             double dLat = ToRadian(Math.Abs(node2.Latitude - node1.Latitude));
 
-            double dLon = ToRadian(Math.Abs(node2.Longitude - node1.Longitude));
+            double dLong = ToRadian(Math.Abs(node2.Longitude - node1.Longitude));
 
             double a = Math.Sin(dLat / 2) * Math.Sin(dLat / 2) +
                 Math.Cos(ToRadian(node1.Latitude)) * Math.Cos(ToRadian(node2.Latitude)) *
-                Math.Sin(dLon / 2) * Math.Sin(dLon / 2);
+                Math.Sin(dLong / 2) * Math.Sin(dLong / 2);
 
             double c = 2 * Math.Atan2(Math.Sqrt(a), Math.Sqrt(1 - a));
 

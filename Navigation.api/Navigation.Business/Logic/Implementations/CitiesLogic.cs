@@ -75,7 +75,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                  string.Format("Error in CitiesLogic - CreateCityAsync(cities) method!"), exception);
+                  string.Format("Error in CitiesLogic class - CreateCityAsync method!"), exception);
             }
         }
 
@@ -93,7 +93,35 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                  string.Format("Error in CitiesLogic - DeleteCityAsync(id) method!"), exception);
+                  string.Format("Error in CitiesLogic class - DeleteCityAsync method!"), exception);
+            }
+        }
+
+        /// <summary>
+        /// Method that will find a city name exists in database.
+        /// </summary>
+        /// <param name="cityName">Name of the city.</param>
+        /// <returns>True, if the city is found in the database, false if it's not found.</returns>
+        public async Task<bool> FindCityNameAsync(string cityName)
+        {
+            try
+            {
+                var saveCity = await _cityService.GetAllAsync();
+                foreach (DataAccess.Collections.Cities city in saveCity)
+                {
+                    if (city.CityName.Contains(cityName))
+                    {
+                        
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(
+                    string.Format("Error in CitiesLogic class - FindCityNameAsync method!"), exception);
             }
         }
 
@@ -109,7 +137,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in CitiesLogic - GetAllCitiesAsync() method!"), exception);
+                    string.Format("Error in CitiesLogic class - GetAllCitiesAsync method!"), exception);
             }
         }
 
@@ -126,23 +154,23 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesLogic - GetByCityIdAsync(id) method!"), exception);
+                   string.Format("Error in CitiesLogic class - GetByCityIdAsync method!"), exception);
             }
         }
 
         /// <summary>
         /// Returns the required informations mathcing the provided search criteria, in our case, the start city.
         /// </summary>
-        /// <param name="startCity">The city from which to start.</param>
+        /// <param name="cityName">The city from which to start.</param>
         /// <returns></returns>
-        public async Task<CitiesModel> GetCityByName(string startCity)
+        public async Task<CitiesModel> GetCityByName(string cityName)
         {
             try
             {
                 var saveCity = await _cityService.GetAllAsync();
                 foreach (Cities city in saveCity)
                 {
-                    if (city.CityName.Contains(startCity))
+                    if (city.CityName.Contains(cityName))
                     {
                         var citySave = new CitiesModel
                         {
@@ -164,7 +192,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesLogic - GetCityByName(startCity) method!"), exception);
+                   string.Format("Error in CitiesLogic class - GetCityByName method!"), exception);
             }
         }
 
@@ -197,7 +225,7 @@ namespace Navigation.Business.Logic.Implementations
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesLogic - UpdateCityAsync(cities,id) method!"), exception);
+                   string.Format("Error in CitiesLogic class - UpdateCityAsync method!"), exception);
             }
         }
         #endregion

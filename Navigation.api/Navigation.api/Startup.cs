@@ -56,10 +56,10 @@ namespace Navigation.api
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
             /* Service registration is necessary to support constructor injection in consuming classes. */
-            services.AddScoped<IDbService<Cities>, DbService<Cities>>();
+            services.AddScoped<IDbService<DataAccess.Collections.Cities>, DbService<DataAccess.Collections.Cities>>();
             services.AddScoped<IDbService<Distances>, DbService<Distances>>();
 
-            services.AddTransient(typeof(ICitiesLogic), typeof(CitiesLogic));
+            services.AddTransient(typeof(ICitiesLogic), typeof(Business.Logic.Implementations.CitiesLogic));
             services.AddTransient(typeof(IDistancesLogic), typeof(DistancesLogic));
 
 
@@ -102,6 +102,7 @@ namespace Navigation.api
             .AllowAnyMethod()
             .AllowAnyOrigin()
             .AllowCredentials()
+            .AllowAnyHeader()
             );
 
 

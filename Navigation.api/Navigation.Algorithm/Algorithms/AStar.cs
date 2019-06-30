@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 namespace Navigation.Algorithm.Algorithms
 {
     /// <summary>
-    /// AStarAlgorithm represents the main class that will call the necessary methods to 
+    /// AStar represents the main class that will call the necessary methods to 
     /// run the A* pathfinding search algorithm.
     /// </summary>
     public class AStar
@@ -38,7 +38,7 @@ namespace Navigation.Algorithm.Algorithms
         private readonly IDistancesLogic _distancesLogic;
         #endregion
 
-        #region Constructors
+        #region Constructor
         /// <summary>
         /// AStarAlgorithm constructor.
         /// </summary>
@@ -50,6 +50,9 @@ namespace Navigation.Algorithm.Algorithms
             _distancesLogic = distancesLogic;
         }
         #endregion
+
+
+        #region Public Methods
         /// <summary>
         /// Method that is responsible for creating the graph. 
         /// </summary>
@@ -58,7 +61,7 @@ namespace Navigation.Algorithm.Algorithms
         public async virtual Task CreateGraph(Graph graph)
         {
             /* Fills a Graph with Romania map information. */
-            /* The Graph contains Nodes that represents Cities of Romania. */
+            /* The Graph contains Nodes that represents cities of Romania. */
             IEnumerable<Cities> cities = await _citiesLogic.GetAllCitiesAsync();
             foreach (Cities cityVar in cities)
             {
@@ -75,8 +78,6 @@ namespace Navigation.Algorithm.Algorithms
             }
         }
 
-
-        #region Public Methods
         /// <summary>
         /// Method that is responsible for assembling the A* pathfinding algorithm.
         /// </summary>
@@ -120,23 +121,32 @@ namespace Navigation.Algorithm.Algorithms
         /// <returns></returns>
         public List<string> DisplayPath(Path<Node> shorthestPath)
         {
-            /* Return the final result (the road and the distance based on start Node and destination Node) */
-            List<string> list = new List<string>();
+            /* Return the final result (the road and the distance based on start Node and destination Node). */
+            List<string> finalList = new List<string>();
+            double totalFinalCost = 0;
             foreach (Path<Node> path in shorthestPath.Reverse())
             {
                 if (path.PreviousSteps != null)
                 {
-                    list.Add("Nume: " + path.PreviousSteps.LastStep.Key);
-                    list.Add("Nume: " + path.LastStep.Key);
-                    list.Add("Latitudine " + path.PreviousSteps.LastStep.Key + ": " + path.PreviousSteps.LastStep.Latitude.ToString());
-                    list.Add("Longitudine " + path.PreviousSteps.LastStep.Key + ": " + path.PreviousSteps.LastStep.Longitude.ToString());
-                    list.Add((path.TotalCost * 0.99).ToString());
+                    if (!finalList.Contains(path.PreviousSteps.LastStep.Key) ||
+                        !finalList.Contains(path.LastStep.Key)){
 
+                        finalList.Add(path.PreviousSteps.LastStep.Key);
+                        finalList.Add(path.PreviousSteps.LastStep.Latitude.ToString());
+                        finalList.Add(path.PreviousSteps.LastStep.Longitude.ToString());
+                        finalList.Add(path.LastStep.Key);
+                        finalList.Add(path.LastStep.Latitude.ToString());
+                        finalList.Add(path.LastStep.Longitude.ToString());
+                        totalFinalCost = path.TotalCost * 0.98;
+                    }
                 }
 
             }
 
-            return list;
+            /* Eliminate duplicates. */
+            List<string> noDups = finalList.Distinct().ToList();
+            noDups.Add(totalFinalCost.ToString());
+            return noDups;
         }
 
         /// <summary>
@@ -167,18 +177,19 @@ namespace Navigation.Algorithm.Algorithms
                 {
                     targetList = await ResolveAlgorithm(startCity, destinationCity.First());
                     totalCost = Double.Parse(targetList.Last());
+                    targetList.Remove(targetList.Last());
 
                     for (int index = 0; index < destinationCity.Count - 1; ++index)
                     {
                         counter = index;
 
                         intermediateList = await ResolveAlgorithm(destinationCity[counter], destinationCity[counter + 1]);
-                        targetList = targetList.Concat(intermediateList).ToList();
-
                         totalCost += Double.Parse(intermediateList.Last());
-                    }
+                        intermediateList.Remove(intermediateList.Last());
 
-                    targetList = targetList.Concat(intermediateList).ToList();
+                        targetList = targetList.Concat(intermediateList).ToList();
+                    }
+                    
                     targetList.Add(totalCost.ToString());
 
                     return targetList;
@@ -188,7 +199,7 @@ namespace Navigation.Algorithm.Algorithms
             catch(Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in GetAStarAsync - GetAStarAsync(destinationCity) method!"), exception);
+                   string.Format("Error in AStar class - GetAStarAsync method!"), exception);
             }
 
         }
@@ -248,5 +259,7 @@ namespace Navigation.Algorithm.Algorithms
         #endregion
 
     }
+
+
 
 }

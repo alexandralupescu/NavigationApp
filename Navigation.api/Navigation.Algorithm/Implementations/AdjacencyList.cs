@@ -30,7 +30,7 @@ namespace Navigation.Algorithm.Implementations
         /// <param name="e">The <see cref="EdgeToNeighbor"/> instance to add.</param>
         protected internal virtual void Add(EdgeToNeighbor e)
         {
-            base.InnerList.Add(e);
+            InnerList.Add(e);
         }
 
         /// <summary>
@@ -39,7 +39,7 @@ namespace Navigation.Algorithm.Implementations
         public virtual EdgeToNeighbor this[int index]
         {
             get { return (EdgeToNeighbor)base.InnerList[index]; }
-            set { base.InnerList[index] = value; }
+            set { InnerList[index] = value; }
         }
     }
 }

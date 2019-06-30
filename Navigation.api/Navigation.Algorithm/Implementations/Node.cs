@@ -83,6 +83,8 @@ namespace Navigation.Algorithm.Implementations
         /// </summary>
         public double HCost { get; set; }
 
+        public double F { get; set; }
+
         /// <summary>
         /// List of nodes being visited (for IDA*).
         /// </summary>
@@ -95,6 +97,10 @@ namespace Navigation.Algorithm.Implementations
             VisitedNodes = new List<Node>();
         }
         public Node(string key, object data) : this(key, data, null)
+        {
+        }
+
+        public Node(string key, double fCost) : this(key, fCost,null)
         {
         }
 
@@ -133,6 +139,12 @@ namespace Navigation.Algorithm.Implementations
             {
                 Neighbors = neighbors;
             }
+        }
+
+        public Node(Node childNode, Node parentNode)
+        {
+            childNode.PathParent = parentNode;
+            
         }
         #endregion
 

@@ -20,9 +20,6 @@ namespace Navigation.Business.Models
     /// <summary>
     /// CitiesModel class accepts commands from the CitiesController and processes them.
     /// </summary>
-    /// <remarks>
-    /// Model class is a bridge between control and the view. The user will activate a control, which calls a method in the model.
-    /// </remarks>
     public class CitiesModel
     {
 

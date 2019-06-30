@@ -15,6 +15,7 @@
  **************************************************************************/
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -77,8 +78,22 @@ namespace Navigation.api.Controllers
         {
             try
             {
+                Stopwatch myTimer = new Stopwatch();
+                myTimer.Start();
                 List<string> list = await _aStar.GetAStarAsync(startCity, destinationCity);
-                return new OkObjectResult(list);
+                myTimer.Stop();
+                Dictionary<string, List<string>> waypoints = new Dictionary<string, List<string>>();
+
+                List<string> noDupes = list.Distinct().ToList();
+                
+
+                for (int i=0; i < noDupes.Count - 1; i= i + 3)
+                {
+                    waypoints.Add(i + "." + list[i], new List<string> { list[i + 1], list[i + 2] });
+                }
+
+                waypoints.Add("finalCost", new List<string> { list[list.Count-1] });
+                return new OkObjectResult(waypoints);
             }
             catch (Exception exception)
             {

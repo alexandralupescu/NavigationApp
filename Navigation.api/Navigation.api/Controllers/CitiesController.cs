@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc;
 using Navigation.Business.Logic.Interfaces;
 using Navigation.Business.Models;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Navigation.api.Controllers
@@ -52,7 +53,7 @@ namespace Navigation.api.Controllers
         /// responsabilities to CitiesLogic class.
         /// </remarks>
         /// <param name="citiesLogic">Used to access the data from the Business layer.</param>
-        public CitiesController(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic)
+        public CitiesController(ICitiesLogic citiesLogic)
         {
             _citiesLogic = citiesLogic;
 
@@ -185,14 +186,21 @@ namespace Navigation.api.Controllers
         {
             try
             {
-                var getCityInfo = await _citiesLogic.GetCityByName(city);
-                return new OkObjectResult(getCityInfo);
-                
+                bool exists = await _citiesLogic.FindCityNameAsync(city);
+                if(exists)
+                {
+                    var getCityInfo = await _citiesLogic.GetCityByName(city);
+                    return new OkObjectResult(getCityInfo);
+                }
+
+                return new OkObjectResult(false);
+
+
             }
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - GetCityInfo(startCity) method!"), exception);
+                   string.Format("Error in CitiesController - GetCityInfo(city) method!"), exception);
             }
         }
         

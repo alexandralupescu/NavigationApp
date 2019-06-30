@@ -13,6 +13,7 @@
  *  applications as long as the original copyright notice is included.    *
  *                                                                        *
  **************************************************************************/
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -84,6 +85,37 @@ namespace Navigation.Algorithm.Implementations
                 return !_list.Any();
             }
         }
+
+        /// <summary>
+        /// Count the elements from the queue.
+        /// </summary>
+        public int Count
+        {
+            get
+            {
+                return _list.Count;
+            }
+        }
+
+        /// <summary>
+        /// Peek the first element from the queue.
+        /// </summary>
+        public P Peek
+        {
+            get
+            {
+                var pair = _list.First();
+                return pair.Key;
+            }
+        }
+
+        /// <summary>
+        /// Clear the queue.
+        /// </summary>
+        public void Clear()
+        {
+             _list.Clear();
+        }
         #endregion
 
         #region IEnumerable Members
@@ -94,6 +126,16 @@ namespace Navigation.Algorithm.Implementations
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _list.GetEnumerator();
+        }
+
+        internal void Enqueue(double fA, Node startCity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public static implicit operator PriorityQueue<P, V>(PriorityQueue<double, Node> v)
+        {
+            throw new NotImplementedException();
         }
         #endregion
     }

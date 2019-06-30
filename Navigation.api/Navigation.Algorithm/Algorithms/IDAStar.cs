@@ -16,6 +16,7 @@
 using Navigation.Algorithm.Implementations;
 using Navigation.Business.Logic.Interfaces;
 using Navigation.DataAccess.Collections;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,6 +45,9 @@ namespace Navigation.Algorithm.Algorithms
         /// Set cutt-off limit or treshold for f() function.
         /// </summary>
         private static double _costLimit = 0;
+        private static double _fLimit = 0;
+
+        private Node _solution;
 
         /// <summary>
         /// List of visited nodes.
@@ -51,7 +55,7 @@ namespace Navigation.Algorithm.Algorithms
         private static List<string> _visitedNodes;
         #endregion
 
-        #region Constructors
+        #region Constructor
         /// <summary>
         /// IDAStar constructor.
         /// </summary>
@@ -126,7 +130,6 @@ namespace Navigation.Algorithm.Algorithms
             while (true)
             {
 
-
                 _visitedNodes.Clear();
                 /* Start IDA Star pathfinding search. */
                 Node foundTemp = await SearchPath(graph,start, destination, start.GCost, fCostLimit);
@@ -166,12 +169,9 @@ namespace Navigation.Algorithm.Algorithms
             Node retNode = new Node();
             Path<Node> path = new Path<Node>(currentNode);
 
-            double distance(Node node1, Node node2) =>
-                                                   node1.Neighbors.Cast<EdgeToNeighbor>().Single(
-                                                       etn => etn.Neighbor.Key == node2.Key).Cost;
 
             /* If the current node is the target, the search process will finish. */
-            if (currentNode == targetNode)
+            if (currentNode.Key.Equals(targetNode.Key))
             {
                 retNode.Status = SEARCHRETURN.FOUND;
                 return retNode;
@@ -288,8 +288,96 @@ namespace Navigation.Algorithm.Algorithms
 
         }
 
+        /// <summary>
+        /// IDAStar - another method to solve the algorithm.
+        /// </summary>
+        /// <param name="startCity"></param>
+        /// <param name="destinationCity"></param>
+        /// <returns></returns>
+        public async Task<List<string>> Solve(string startCity, string destinationCity)
+        {
+            /* Creating the graph. */
+            Graph graph = new Graph();
+            await CreateGraph(graph);
+
+            /* Store the start Node */
+            Node rootNode = graph.Nodes[startCity];
+            /* Store the destination Node */
+            Node destination = graph.Nodes[destinationCity];
+
+            List<string> result = null;
+
+            _fLimit = Haversine.Distance(rootNode, destination); //_problemCity.GetHeuristicDistance(rootNode.City) + rootNode.G;
+
+            _solution = null;
+            do
+            {
+                _fLimit = await DFSContour(rootNode, _fLimit, destination);
+                if (_solution != null)
+                {
+                    result = new List<string>();
+                    while (_solution.PathParent != null)
+                    {
+                        result.Add(_solution.Key);
+                        _solution = _solution.PathParent;
+                    }
+                    result.Add(_solution.Key);
+                    result.Reverse();
+
+                    return result;
+                }
+
+                if (_fLimit == double.MaxValue)
+                    return null;
+            } while (true);
+
+        }
+        #endregion
+
+        #region Private Methods
+        private async Task<double> DFSContour(Node currentNode, double _fLimit, Node destinationCity)
+        {
+            double newF;
+            double nextF = double.MaxValue;
+            if (currentNode.F > _fLimit)
+            {
+                _solution = null;
+                return currentNode.F;
+            }
+            if (currentNode.Key.Equals(destinationCity.Key))
+            {
+                _solution = currentNode;
+                return _fLimit;
+            }
+
+            Path<Node> path = new Path<Node>(currentNode);
+            List<Node> successorCities = path.LastStep.Neighbours.ToList();
+
+            if (successorCities != null)
+            {
+                foreach (Node succNode in successorCities)
+                {
+                    double distance(Node node1, Node node2) =>
+                                                  node1.Neighbors.Cast<EdgeToNeighbor>().Single(
+                                                      etn => etn.Neighbor.Key == node2.Key).Cost;
+
+
+                    succNode.GCost = currentNode.GCost + distance(succNode, currentNode);
+                    succNode.HCost = Haversine.Distance(succNode, destinationCity);
+                    succNode.F = succNode.GCost + succNode.HCost;
+                    newF = await DFSContour(succNode, _fLimit, destinationCity);
+                    if (_solution != null)
+                        return _fLimit;
+                    nextF = Math.Min(nextF, newF);
+                }
+            }
+            _solution = null;
+            return nextF;
+        }
+
 
         #endregion
+
 
 
     }
