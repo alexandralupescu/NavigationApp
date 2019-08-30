@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using System;
 using System.Collections;
@@ -27,6 +19,30 @@ namespace Navigation.Algorithm.Implementations
     {
         #region Private Members
         private Hashtable _data = new Hashtable();
+        #endregion
+
+        #region Public Properties
+        /// <summary>
+        /// Returns a particular <see cref="Node"/> instance by index.
+        /// </summary>
+        public virtual Node this[string key]
+        {
+            get
+            {
+                return (Node)_data[key];
+            }
+        }
+
+        /// <summary>
+        /// Returns the number of nodes in the NodeList.
+        /// </summary>
+        public virtual int Count
+        {
+            get
+            {
+                return _data.Count;
+            }
+        }
         #endregion
 
         #region Public Methods
@@ -75,36 +91,14 @@ namespace Navigation.Algorithm.Implementations
         }
         #endregion
 
-        #region Public Properties
-        /// <summary>
-        /// Returns a particular <see cref="Node"/> instance by index.
-        /// </summary>
-        public virtual Node this[string key]
-        {
-            get
-            {
-                return (Node)_data[key];
-            }
-        }
-
-        /// <summary>
-        /// Returns the number of nodes in the NodeList.
-        /// </summary>
-        public virtual int Count
-        {
-            get
-            {
-                return _data.Count;
-            }
-        }
-        #endregion
+        
 
         #region NodeList Enumerator
         /// <summary>
-        /// The NodeListEnumerator method is a custom enumerator for the NodeList object.  It essentially serves
+        /// The NodeListEnumerator method is a custom enumerator for the NodeList object. It essentially serves
         /// as an enumerator over the NodeList's Hashtable class, but rather than returning DictionaryEntry values,
         /// it returns just the Node object.
-        /// This allows  using the Graph class to use a foreach to enumerate the Nodes in the graph.
+        /// This allows using the Graph class to use a foreach to enumerate the Nodes in the graph.
         /// </summary>
         public class NodeListEnumerator : IEnumerator, IDisposable
         {

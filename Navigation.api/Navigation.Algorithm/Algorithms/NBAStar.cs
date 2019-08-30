@@ -1,4 +1,11 @@
-﻿using Navigation.Algorithm.Implementations;
+﻿/**************************************************************************
+ *                                                                        *
+ *  File:        NBAStar.cs                                               *
+ *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
+ *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
+ *  Description: Apply heuristic search algorithms in travel planning     *
+ **************************************************************************/
+using Navigation.Algorithm.Implementations;
 using Navigation.Business.Logic.Interfaces;
 using Navigation.DataAccess.Collections;
 using System;
@@ -12,129 +19,138 @@ namespace Navigation.Algorithm.Algorithms
     /// NBAStar represents the main class that will call the necessary methods
     /// to run the NBA* algorithm.
     /// </summary>
-    public class NBAStar
+    public class NBAStar : Algorithm
     {
         #region Private Members
         /// <summary>
-        /// Used to access the data from the Business layer.
+        /// Queues that stores the cities by priority (f cost) for the two processes.
         /// </summary>
-        private readonly ICitiesLogic _citiesLogic;
-        private readonly IDistancesLogic _distancesLogic;
+        private PriorityQueue<double, Path<Node>> _openProcessNo_1;
+        private PriorityQueue<double, Path<Node>> _openProcessNo_2;
 
-        /// <summary>
-        /// Queues that stores the cities by priority (f cost) for
-        /// the two processes.
-        /// </summary>
-        private PriorityQueue<double, Path<Node>> openProcessNo_1;
-        private PriorityQueue<double, Path<Node>> openProcessNo_2;
         /// <summary>
         /// Dictionaries that stores the neighbours for a current node.
         /// </summary>
-        private Dictionary<Node, Node> parentsProcessNo_1;
-        private Dictionary<Node, Node> parentsProcessNo_2;
+        private Dictionary<Node, Node> _parentsProcessNo_1;
+        private Dictionary<Node, Node> _parentsProcessNo_2;
+
         /// <summary>
         /// Dictionaries that stores the distances for the both processes.
         /// </summary>
-        private Dictionary<Node, double> distanceProcessNo_1;
-        private Dictionary<Node, double> distanceProcessNo_2;
+        private Dictionary<Node, double> _distanceProcessNo_1;
+        private Dictionary<Node, double> _distanceProcessNo_2;
+
         /// <summary>
-        /// List will store the nodes that have been traversed.
+        /// List that will store the nodes that have been traversed.
         /// </summary>
-        private List<string> closed;
+        private List<string> _closed;
+
         /// <summary>
         /// Intersection node.
         /// </summary>
-        private Node touchNode;
+        private Node _touchNode;
 
         /// <summary>
         /// F cost parameter for the first process.
         /// </summary>
-        private double fProcessNo_1;
+        private double _fProcessNo_1;
+
         /// <summary>
         /// F cost parameter for the second process.
         /// </summary>
-        private double fProcessNo_2;
+        private double _fProcessNo_2;
+
         /// <summary>
-        /// Parameter that will store the best score has found the algorithm.
+        /// Parameter that will store the best score found by the algorithm.
         /// </summary>
-        private double bestPathLength;
+        private double _bestPathLength;
         #endregion
 
-        #region Constructor
+        #region Constructors
         /// <summary>
-        /// NBA* constructor.
+        /// NBAStar constructor.
         /// </summary>
-        /// <param name="citiesLogic"></param>
-        /// <param name="distancesLogic"></param>
-        public NBAStar(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic)
+        /// <param name="citiesLogic">Access CitiesLogic methods from Business tier.</param>
+        /// <param name="distancesLogic">Access DistancesLogic methods from Business tier.</param>
+        public NBAStar(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic) : base(citiesLogic,distancesLogic)
         {
-            _citiesLogic = citiesLogic;
-            _distancesLogic = distancesLogic;
 
+            _openProcessNo_1 = new PriorityQueue<double, Path<Node>>();
+            _openProcessNo_2 = new PriorityQueue<double, Path<Node>>();
 
-            openProcessNo_1 = new PriorityQueue<double, Path<Node>>();
-            openProcessNo_2 = new PriorityQueue<double, Path<Node>>();
+            _parentsProcessNo_1 = new Dictionary<Node, Node>();
+            _parentsProcessNo_2 = new Dictionary<Node, Node>();
 
-            parentsProcessNo_1 = new Dictionary<Node, Node>();
-            parentsProcessNo_2 = new Dictionary<Node, Node>();
+            _distanceProcessNo_1 = new Dictionary<Node, double>();
+            _distanceProcessNo_2 = new Dictionary<Node, double>();
 
-            distanceProcessNo_1 = new Dictionary<Node, double>();
-            distanceProcessNo_2 = new Dictionary<Node, double>();
-
-            closed = new List<string>();
+            _closed = new List<string>();
         }
         #endregion
 
         #region Private Methods
         /// <summary>
-        /// Initialize all the variables neccessary in process the algorithm.
+        /// Initialize all the variables neccessary in the process of the algorithm.
         /// </summary>
         /// <param name="startCity"></param>
         /// <param name="destinationCity"></param>
         private void Init(Node startCity, Node destinationCity)
         {
-            openProcessNo_1.Clear();
-            openProcessNo_2.Clear();
+            /* Clear step. */
+            _openProcessNo_1.Clear();
+            _openProcessNo_2.Clear();
 
-            distanceProcessNo_1.Clear();
-            distanceProcessNo_2.Clear();
+            _distanceProcessNo_1.Clear();
+            _distanceProcessNo_2.Clear();
 
-            parentsProcessNo_1.Clear();
-            parentsProcessNo_2.Clear();
+            _parentsProcessNo_1.Clear();
+            _parentsProcessNo_2.Clear();
 
-            closed.Clear();
+            _closed.Clear();
 
             double haversineEstimation(Node n) => Haversine.Distance(n, destinationCity);
 
             double totalDistance = haversineEstimation(startCity);
 
-            fProcessNo_1 = totalDistance;
-            fProcessNo_2 = totalDistance;
+            _fProcessNo_1 = totalDistance;
+            _fProcessNo_2 = totalDistance;
 
-            bestPathLength = double.MaxValue;
-            touchNode = null;
+            _bestPathLength = double.MaxValue;
+            _touchNode = null;
 
-            openProcessNo_1.Enqueue(fProcessNo_1, new Path<Node>(startCity));
-            openProcessNo_2.Enqueue(fProcessNo_2, new Path<Node>(destinationCity));
+            _openProcessNo_1.Enqueue(_fProcessNo_1, new Path<Node>(startCity));
+            _openProcessNo_2.Enqueue(_fProcessNo_2, new Path<Node>(destinationCity));
 
-            parentsProcessNo_1.Add(startCity, null);
-            parentsProcessNo_2.Add(destinationCity, null);
+            _parentsProcessNo_1.Add(startCity, null);
+            _parentsProcessNo_2.Add(destinationCity, null);
 
-            distanceProcessNo_1.Add(startCity, 0.0);
-            distanceProcessNo_2.Add(destinationCity, 0.0);
+            _distanceProcessNo_1.Add(startCity, 0.0);
+            _distanceProcessNo_2.Add(destinationCity, 0.0);
 
         }
 
+        /// <summary>
+        /// TraceBack method is used to display the final path.
+        /// </summary>
+        /// <param name="touchNode">touchNode represents intersection node (common node).</param>
+        /// <param name="parentsProcessNo_1">parentsProcessNo_1 represents the Dictionary for one part of the final route.</param>
+        /// <param name="parentsProcessNo_2">parentsProcessNo_2 represents the Dictionary for the other part of the final route.</param>
+        /// <param name="totalDistance">totalDistance represents total number of km.</param>
+        /// <returns></returns>
         private Dictionary<string, List<string>> TraceBack(Node touchNode, Dictionary<Node, Node> parentsProcessNo_1, Dictionary<Node, Node> parentsProcessNo_2, double totalDistance)
         {
 
             Dictionary<string, List<string>> path = new Dictionary<string, List<string>>();
             Node currentNode = touchNode;
 
+            int counter = 0;
+            Random rnd = new Random();
+
             while (currentNode != null)
             {
-                path.Add(currentNode.Key, new List<string> { currentNode.Latitude.ToString(), currentNode.Longitude.ToString() });
+                path.Add(rnd.Next(1,100) + "."  + currentNode.Key, new List<string> { currentNode.Latitude.ToString(), currentNode.Longitude.ToString() });
                 currentNode = parentsProcessNo_1[currentNode];
+                counter++;
 
             }
 
@@ -147,23 +163,30 @@ namespace Navigation.Algorithm.Algorithms
                 while (currentNode != null)
                 {
 
-                    reversedPath.Add(currentNode.Key, new List<string> { currentNode.Latitude.ToString(), currentNode.Longitude.ToString() });
+                    reversedPath.Add(rnd.Next(1,100) + "." + currentNode.Key, new List<string> { currentNode.Latitude.ToString(), currentNode.Longitude.ToString() });
                     currentNode = parentsProcessNo_2[currentNode];
+                    counter++;
                 }
 
 
             }
 
-            reversedPath.Add("totalDistance", new List<string> { totalDistance.ToString() });
+            reversedPath.Add("finalCost", new List<string> { totalDistance.ToString() });
 
             return reversedPath;
         }
 
-
+        /// <summary>
+        /// ExpandInForwardDirection represents the first process.
+        /// The search will start with the initial start city and the scope
+        /// will be the initial destination.
+        /// </summary>
+        /// <param name="start">Name of the city, the user will start the search.</param>
+        /// <param name="destination">Name of the city, the user will want to reach.</param>
         private void ExpandInForwardDirection(Node start, Node destination)
         {
 
-            var currentNodePath = openProcessNo_1.Dequeue();
+            var currentNodePath = _openProcessNo_1.Dequeue();
 
 
             /* Function which tells us the exact distance between two neighbours. */
@@ -171,19 +194,19 @@ namespace Navigation.Algorithm.Algorithms
                                                     node1.Neighbors.Cast<EdgeToNeighbor>().Single(
                                                         etn => etn.Neighbor.Key == node2.Key).Cost;
 
-            if (closed.Contains(currentNodePath.LastStep.Key))
+            if (_closed.Contains(currentNodePath.LastStep.Key))
             {
                 return;
             }
 
-            closed.Add(currentNodePath.LastStep.Key);
+            _closed.Add(currentNodePath.LastStep.Key);
 
 
             Path<Node> path = new Path<Node>(currentNodePath.LastStep);
             double fCost = 0;
 
-            if ((distanceProcessNo_1[currentNodePath.LastStep] + Haversine.Distance(currentNodePath.LastStep, destination)) >= bestPathLength ||
-                (distanceProcessNo_1[currentNodePath.LastStep] + fProcessNo_2 - Haversine.Distance(currentNodePath.LastStep, start) >= bestPathLength))
+            if ((_distanceProcessNo_1[currentNodePath.LastStep] + Haversine.Distance(currentNodePath.LastStep, destination)) >= _bestPathLength ||
+                (_distanceProcessNo_1[currentNodePath.LastStep] + _fProcessNo_2 - Haversine.Distance(currentNodePath.LastStep, start) >= _bestPathLength))
             {
                 // reject the current node
             }
@@ -191,58 +214,68 @@ namespace Navigation.Algorithm.Algorithms
             {
                 foreach (Node childNode in currentNodePath.LastStep.Neighbours)
                 {
-                    if (closed.Contains(childNode.Key))
+                    if (_closed.Contains(childNode.Key))
                     {
                         continue;
                     }
 
-                    double tentativeDistance = distanceProcessNo_1[currentNodePath.LastStep] + distance(currentNodePath.LastStep, childNode);
+                    double tentativeDistance = _distanceProcessNo_1[currentNodePath.LastStep] + distance(currentNodePath.LastStep, childNode);
 
 
-                    if (!distanceProcessNo_1.ContainsKey(childNode) || (distanceProcessNo_1[childNode] > tentativeDistance))
+                    if (!_distanceProcessNo_1.ContainsKey(childNode) || (_distanceProcessNo_1[childNode] > tentativeDistance))
                     {
-                        distanceProcessNo_1.Add(childNode, tentativeDistance);
-                        parentsProcessNo_1.Add(childNode, currentNodePath.LastStep);
-                        openProcessNo_1.Enqueue(tentativeDistance + Haversine.Distance(childNode, destination), new Path<Node>(childNode));
+                        if (_distanceProcessNo_1.ContainsKey(childNode))
+                        {
+                            _distanceProcessNo_1.Remove(childNode);
+                        }
+
+                        if (_parentsProcessNo_1.ContainsKey(childNode))
+                        {
+                            _parentsProcessNo_1.Remove(childNode);
+                        }
+
+                        _distanceProcessNo_1.Add(childNode, tentativeDistance);
+                        _parentsProcessNo_1.Add(childNode, currentNodePath.LastStep);
+                        _openProcessNo_1.Enqueue(tentativeDistance + Haversine.Distance(childNode, destination), new Path<Node>(childNode));
                         fCost = tentativeDistance + Haversine.Distance(childNode, destination);
 
 
-                        if (distanceProcessNo_2.ContainsKey(childNode))
+                        if (_distanceProcessNo_2.ContainsKey(childNode))
                         {
-                            double pathLength = tentativeDistance + distanceProcessNo_2[childNode];
+                            double pathLength = tentativeDistance + _distanceProcessNo_2[childNode];
 
 
-                            if (bestPathLength > pathLength)
+                            if (_bestPathLength > pathLength)
                             {
-                                bestPathLength = pathLength;
-                                touchNode = childNode;
+                                _bestPathLength = pathLength;
+                                _touchNode = childNode;
                             }
-
 
                         }
 
                     }
 
-
                 }
 
-
             }
 
-            if (!openProcessNo_1.IsEmpty)
+            if (!_openProcessNo_1.IsEmpty)
             {
-                fProcessNo_1 = openProcessNo_1.Peek;
+                _fProcessNo_1 = _openProcessNo_1.Peek;
 
             }
-
-
-
         }
 
-
+        /// <summary>
+        /// ExpandInBackwardDirection is the inversed process. 
+        /// The initial destination will be the start node and the initial start city
+        /// will be destination.
+        /// </summary>
+        /// <param name="start">Name of the city, the user will start the search.</param>
+        /// <param name="destination">Name of the city, the user will want to reach.</param>
         private void ExpandInBackwardDirection(Node start, Node destination)
         {
-            var currentNodePath = openProcessNo_2.Dequeue();
+            var currentNodePath = _openProcessNo_2.Dequeue();
 
 
             /* Function which tells us the exact distance between two neighbours. */
@@ -250,7 +283,7 @@ namespace Navigation.Algorithm.Algorithms
                                                     node1.Neighbors.Cast<EdgeToNeighbor>().Single(
                                                         etn => etn.Neighbor.Key == node2.Key).Cost;
 
-            if (closed.Contains(currentNodePath.LastStep.Key))
+            if (_closed.Contains(currentNodePath.LastStep.Key))
             {
                 return;
             }
@@ -259,8 +292,8 @@ namespace Navigation.Algorithm.Algorithms
             Path<Node> path = new Path<Node>(currentNodePath.LastStep);
             double fCost = 0;
 
-            if ((distanceProcessNo_2[currentNodePath.LastStep] + Haversine.Distance(currentNodePath.LastStep, start)) >= bestPathLength ||
-                (distanceProcessNo_2[currentNodePath.LastStep] + fProcessNo_1 - Haversine.Distance(currentNodePath.LastStep, destination) >= bestPathLength))
+            if ((_distanceProcessNo_2[currentNodePath.LastStep] + Haversine.Distance(currentNodePath.LastStep, start)) >= _bestPathLength ||
+                (_distanceProcessNo_2[currentNodePath.LastStep] + _fProcessNo_1 - Haversine.Distance(currentNodePath.LastStep, destination) >= _bestPathLength))
             {
                 // reject the current node
             }
@@ -268,32 +301,40 @@ namespace Navigation.Algorithm.Algorithms
             {
                 foreach (Node parentNode in path.LastStep.Neighbours)
                 {
-                    if (closed.Contains(parentNode.Key))
+                    if (_closed.Contains(parentNode.Key))
                     {
                         continue;
                     }
 
-                    double tentativeDistance = distanceProcessNo_2[currentNodePath.LastStep] + distance(parentNode, currentNodePath.LastStep);
+                    double tentativeDistance = _distanceProcessNo_2[currentNodePath.LastStep] + distance(parentNode, currentNodePath.LastStep);
 
 
-                    if (!distanceProcessNo_2.ContainsKey(parentNode) || (distanceProcessNo_2[parentNode] > tentativeDistance))
+                    if (!_distanceProcessNo_2.ContainsKey(parentNode) || (_distanceProcessNo_2[parentNode] > tentativeDistance))
                     {
-                        distanceProcessNo_2.Add(parentNode, tentativeDistance);
-                        parentsProcessNo_2.Add(parentNode, currentNodePath.LastStep);
-                        openProcessNo_2.Enqueue(tentativeDistance + Haversine.Distance(parentNode, destination), new Path<Node>(parentNode));
+                        if (_distanceProcessNo_2.ContainsKey(parentNode))
+                        {
+                            _distanceProcessNo_2.Remove(parentNode);
+                        }
+                        if (_parentsProcessNo_2.ContainsKey(parentNode))
+                        {
+                            _parentsProcessNo_2.Remove(parentNode);
+                        }
+                        _distanceProcessNo_2.Add(parentNode, tentativeDistance);
+                        _parentsProcessNo_2.Add(parentNode, currentNodePath.LastStep);
+                        _openProcessNo_2.Enqueue(tentativeDistance + Haversine.Distance(parentNode, destination), new Path<Node>(parentNode));
                         fCost = tentativeDistance + Haversine.Distance(parentNode, destination);
 
 
-                        if (distanceProcessNo_1.ContainsKey(parentNode))
+                        if (_distanceProcessNo_1.ContainsKey(parentNode))
                         {
-                            double pathLength = tentativeDistance + distanceProcessNo_1[parentNode];
+                            double pathLength = tentativeDistance + _distanceProcessNo_1[parentNode];
 
 
-                            if (bestPathLength > pathLength)
+                            if (_bestPathLength > pathLength)
                             {
 
-                                bestPathLength = pathLength;
-                                touchNode = parentNode;
+                                _bestPathLength = pathLength;
+                                _touchNode = parentNode;
                             }
 
 
@@ -307,43 +348,15 @@ namespace Navigation.Algorithm.Algorithms
 
             }
 
-
-
-            if (!openProcessNo_2.IsEmpty)
+            if (!_openProcessNo_2.IsEmpty)
             {
-                fProcessNo_2 = openProcessNo_2.Peek;
+                _fProcessNo_2 = _openProcessNo_2.Peek;
 
             }
         }
         #endregion
 
         #region Public Methods
-        /// <summary>
-        /// Method that is responsible for creating the graph. 
-        /// </summary>
-        /// <param name="graph"></param>
-        /// <returns></returns>
-        public async virtual Task CreateGraph(Graph graph)
-        {
-            /* Fills a Graph with Romania map information. */
-            /* The Graph contains Nodes that represents Cities of Romania. */
-            IEnumerable<Cities> cities = await _citiesLogic.GetAllCitiesAsync();
-            foreach (Cities cityVar in cities)
-            {
-                Node cityNode = new Node(cityVar.CityName, null, cityVar.Latitude, cityVar.Longitude);
-                graph.AddNode(cityNode);
-            }
-
-            /* Nodes are vertexes in the Graph. Connections between Nodes are edges. */
-            /* Fills a Graph with edges between cities. */
-            IEnumerable<Distances> distances = await _distancesLogic.GetAllDistancesAsync();
-            foreach (Distances distanceVar in distances)
-            {
-                graph.AddUndirectedEdge(distanceVar.StartCity, distanceVar.DestinationCity, distanceVar.Distance);
-            }
-        }
-
-
         /// <summary>
         /// Main loop of the algorithm.
         /// </summary>
@@ -373,12 +386,9 @@ namespace Navigation.Algorithm.Algorithms
                 return finalDict;
             }
 
-            double distance = 0;
-
-
-            while (!openProcessNo_1.IsEmpty && !openProcessNo_2.IsEmpty)
+            while (!_openProcessNo_1.IsEmpty && !_openProcessNo_2.IsEmpty)
             {
-                if (openProcessNo_1.Count < openProcessNo_2.Count)
+                if (_openProcessNo_1.Count < _openProcessNo_2.Count)
                 {
                     ExpandInForwardDirection(start, destination);
                 }
@@ -390,16 +400,22 @@ namespace Navigation.Algorithm.Algorithms
             }
 
 
-            if (touchNode == null)
+            if (_touchNode == null)
             {
                 return finalDict;
             }
 
 
-            return TraceBack(touchNode, parentsProcessNo_1, parentsProcessNo_2, distance);
+            return TraceBack(_touchNode, _parentsProcessNo_1, _parentsProcessNo_2, _bestPathLength * 1.01);
         }
 
-
+        /// <summary>
+        /// GetNBAStarAsync method treats the cases: two inputs or three inputs.
+        /// The result will be a dictionary with the final result and the total distance measured in km.
+        /// </summary>
+        /// <param name="startCity">Name of the city, the user will start the search.</param>
+        /// <param name="destinationCity">Name of the city, the user will want to reach.</param>
+        /// <returns></returns>
         public async Task<Dictionary<string, List<string>>> GetNBAStarAsync(string startCity, List<string> destinationCity)
         {
 
@@ -407,6 +423,7 @@ namespace Navigation.Algorithm.Algorithms
             Dictionary<string, List<string>> intermediateDict = new Dictionary<string, List<string>>();
 
             int counter = 0;
+            double totalCost = 0;
 
 
             try
@@ -420,17 +437,21 @@ namespace Navigation.Algorithm.Algorithms
                 else
                 {
                     targetDict = await SearchNBAAsync(startCity, destinationCity.First());
+                    totalCost = _bestPathLength;
+                    targetDict.Remove(targetDict.Keys.Last());
 
                     for (int index = 0; index < destinationCity.Count - 1; ++index)
                     {
                         counter = index;
+
                         intermediateDict = await SearchNBAAsync(destinationCity[counter], destinationCity[counter + 1]);
+                        totalCost += (_bestPathLength);
 
                         targetDict = targetDict.Concat(intermediateDict).ToDictionary(x => x.Key, x => x.Value);
+                        targetDict.Remove(targetDict.Keys.Last());
                     }
 
-
-
+                    targetDict.Add("finalCost", new List<string> { (totalCost * 1.01).ToString() });
                     return targetDict;
                 }
 
@@ -439,13 +460,11 @@ namespace Navigation.Algorithm.Algorithms
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in GetAStarAsync - GetAStarBiAsync(destinationCity) method!"), exception);
+                   string.Format("Error in GetAStarAsync - GetNBAStarAsync method!"), exception);
             }
 
         }
         #endregion
-
-
 
     }
 }

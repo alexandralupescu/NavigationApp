@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using FluentAssertions;
 using Moq;
@@ -23,7 +15,7 @@ using Xunit;
 namespace Navigation.Tests
 {
     /// <summary>
-    /// DistancesLogicTest is used 
+    /// DistancesLogicTest class.
     /// </summary>
     /// <remarks>
     /// Unit testing is a method of veryfing the correct functionaly of individual source
@@ -41,7 +33,7 @@ namespace Navigation.Tests
         /// </summary>
         private void SetUpTests()
         {
-            // Constructor is called for every test.
+            /* Constructor is called for every test. */
             repositoryMock = new Mock<IDbService<Distances>>();
         }
 

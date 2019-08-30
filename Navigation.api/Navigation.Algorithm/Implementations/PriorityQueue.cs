@@ -4,16 +4,7 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +15,12 @@ namespace Navigation.Algorithm.Implementations
     /// Immutable priority queue.
     /// </summary>
     /// <remarks>
-    /// In order to make the A* algorithm work, we need to get the lowest-estimated cost path.
+    /// In order to make the A* and NBA* algorithm work, we need to get the lowest-estimated cost path.
     /// The standard data structure for doing is called a priority queue. Priority queues are so-called because 
     /// they are tipically used to store a list where each element has an associated priority.
     /// The "highest priority" path is the one with the least estimated cost.
-    /// <typeparam name="P"></typeparam>
-    /// <typeparam name="V"></typeparam>
+    /// <typeparam name="P">Priority of an element.</typeparam>
+    /// <typeparam name="V">Value of the element.</typeparam>
     public class PriorityQueue<P, V> : IEnumerable
     {
         #region Private Members
@@ -126,16 +117,6 @@ namespace Navigation.Algorithm.Implementations
         IEnumerator IEnumerable.GetEnumerator()
         {
             return _list.GetEnumerator();
-        }
-
-        internal void Enqueue(double fA, Node startCity)
-        {
-            throw new NotImplementedException();
-        }
-
-        public static implicit operator PriorityQueue<P, V>(PriorityQueue<double, Node> v)
-        {
-            throw new NotImplementedException();
         }
         #endregion
     }

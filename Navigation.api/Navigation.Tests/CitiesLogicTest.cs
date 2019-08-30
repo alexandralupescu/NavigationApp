@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using FluentAssertions;
 using Moq;
@@ -55,7 +47,6 @@ namespace Navigation.Tests
             repositoryMock = null;
         }
 
-
         /// <summary>
         /// Test method that will verify if a city Id exists in the database.
         /// </summary>
@@ -88,8 +79,9 @@ namespace Navigation.Tests
             TearDownTests();
         }
 
+
         /// <summary>
-        /// Test method that will verify DeleteAsync method that will delete a documents
+        /// Test method that will verify DeleteAsync method that will delete a document
         /// based on Id.
         /// </summary>
         [Fact]
@@ -117,6 +109,5 @@ namespace Navigation.Tests
 
             TearDownTests();
         }
-
     }
 }

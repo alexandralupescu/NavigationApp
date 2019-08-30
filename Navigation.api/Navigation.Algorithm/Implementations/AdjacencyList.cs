@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using System.Collections;
 
@@ -38,7 +30,7 @@ namespace Navigation.Algorithm.Implementations
         /// </summary>
         public virtual EdgeToNeighbor this[int index]
         {
-            get { return (EdgeToNeighbor)base.InnerList[index]; }
+            get { return (EdgeToNeighbor)InnerList[index]; }
             set { InnerList[index] = value; }
         }
     }

@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using System;
 using System.Threading.Tasks;
@@ -74,7 +66,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in DistancesController - Get() method!"), exception);
+                    string.Format("Error in DistancesController - Get method!"), exception);
             }
         }
 
@@ -96,7 +88,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in DistancesController - Get(id) method!"), exception);
+                   string.Format("Error in DistancesController - Get (by id) method!"), exception);
             }
         }
 
@@ -118,7 +110,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in DistancesController - Post(distance) method!"), exception);
+                   string.Format("Error in DistancesController - Post method!"), exception);
             }
         }
 
@@ -142,7 +134,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in DistancesController - Delete(id) method!"), exception);
+                   string.Format("Error in DistancesController - Delete method!"), exception);
             }
         }
 
@@ -152,7 +144,7 @@ namespace Navigation.api.Controllers
         /// <remarks>
         /// PUT method updates a document from Distances collection.
         /// </remarks>
-        /// <param name="city">Entity that will be updated in Distances collection.</param>
+        /// <param name="distance">Entity that will be updated in Distances collection.</param>
         /// <param name="id">The matching criteria for update.</param>
         /// <returns></returns>
         [HttpPut("{id:length(24)}")]
@@ -167,7 +159,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in DistancesController - Put(distance,id) method!"), exception);
+                   string.Format("Error in DistancesController - Put method!"), exception);
             }
         }
 
@@ -192,7 +184,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in DistancesController - GetRoadDistance(startCity,destinationCity) method!"), exception);
+                   string.Format("Error in DistancesController - GetRoadDistance method!"), exception);
             }
         }
         #endregion

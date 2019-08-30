@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using Navigation.Business.Logic.Interfaces;
 using Navigation.Business.Models;
@@ -27,7 +19,8 @@ namespace Navigation.Business.Logic.Implementations
     /// DistancesLogic implements the IDistancesLogic interface and calls the methods from DBService class.
     /// </summary>
     /// <remarks>
-    /// BLL (Business Logic Layer) serves as an intermediary layer for data exchange between the presentation layer and DAL (Data Access Layer).
+    /// BLL (Business Logic Layer) serves as an intermediary layer for data exchange between the 
+    /// presentation layer and DAL (Data Access Layer).
     /// </remarks>
     public class DistancesLogic : IDistancesLogic
     {
@@ -48,7 +41,6 @@ namespace Navigation.Business.Logic.Implementations
         {
             _distanceService = distanceService;
         }
-
         #endregion
 
         #region Public Methods
@@ -63,7 +55,7 @@ namespace Navigation.Business.Logic.Implementations
                 var @distance = new Distances
                 {
                     StartCity = distances.StartCity,
-                    DestinationCity = distances.StopName,
+                    DestinationCity = distances.DestinationCity,
                     Distance = distances.Distance,
                     IsRailway = distances.IsRailway
                 };
@@ -180,7 +172,7 @@ namespace Navigation.Business.Logic.Implementations
                 {
 
                     StartCity = distances.StartCity,
-                    DestinationCity = distances.StopName,
+                    DestinationCity = distances.DestinationCity,
                     Distance = distances.Distance,
                     IsRailway = distances.IsRailway,
                     Id = distanceFromDb.Id

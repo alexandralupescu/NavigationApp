@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using System.Collections;
 using System.Collections.Generic;
@@ -43,6 +35,12 @@ namespace Navigation.Algorithm.Implementations
         #endregion
 
         #region Constructors
+        /// <summary>
+        /// Path constructor. Initialize step.
+        /// </summary>
+        /// <param name="lastStep">Last step in the list (last element - city reached).</param>
+        /// <param name="previousSteps">Previous steps in the list (in our case the cities reached).</param>
+        /// <param name="totalCost">Total cost of the path.</param>
         private Path(Node lastStep, Path<Node> previousSteps, double totalCost)
         {
             LastStep = lastStep;
@@ -53,7 +51,6 @@ namespace Navigation.Algorithm.Implementations
         }
 
         public Path(Node start) : this(start, null, 0) { }
-
         #endregion
 
         #region Public Methods
@@ -82,6 +79,10 @@ namespace Navigation.Algorithm.Implementations
 
         }
 
+        /// <summary>
+        /// Returns an enumerator that iterates through a list.
+        /// </summary>
+        /// <returns></returns>
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();

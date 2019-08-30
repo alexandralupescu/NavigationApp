@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using Navigation.Business.Logic.Interfaces;
 using Navigation.Business.Models;
@@ -19,6 +11,8 @@ using Navigation.DataAccess.Collections;
 using Navigation.DataAccess.Services;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace Navigation.Business.Logic.Implementations
@@ -28,7 +22,8 @@ namespace Navigation.Business.Logic.Implementations
     /// CitiesLogic implements the ICitiesLogic interface and calls the methods from DBService class.
     /// </summary>
     /// <remarks>
-    /// BLL (Business Logic Layer) serves as an intermediary layer for data exchange between the presentation layer and DAL (Data Access Layer).
+    /// BLL (Business Logic Layer) serves as an intermediary layer for data exchange between the 
+    /// presentation layer and DAL (Data Access Layer).
     /// </remarks>
     public class CitiesLogic : ICitiesLogic
     {
@@ -69,7 +64,6 @@ namespace Navigation.Business.Logic.Implementations
                     County = cities.County
                 };
 
-
                 await _cityService.CreateAsync(city);
             }
             catch (Exception exception)
@@ -98,7 +92,7 @@ namespace Navigation.Business.Logic.Implementations
         }
 
         /// <summary>
-        /// Method that will find a city name exists in database.
+        /// Method that will retrieve a response (true/false) if a city exists in database.
         /// </summary>
         /// <param name="cityName">Name of the city.</param>
         /// <returns>True, if the city is found in the database, false if it's not found.</returns>
@@ -107,9 +101,9 @@ namespace Navigation.Business.Logic.Implementations
             try
             {
                 var saveCity = await _cityService.GetAllAsync();
-                foreach (DataAccess.Collections.Cities city in saveCity)
+                foreach (Cities city in saveCity)
                 {
-                    if (city.CityName.Contains(cityName))
+                    if (RemoveDiacritics(RemoveDelimiter(city.CityName)).Contains(cityName))
                     {
                         
                         return true;
@@ -161,16 +155,16 @@ namespace Navigation.Business.Logic.Implementations
         /// <summary>
         /// Returns the required informations mathcing the provided search criteria, in our case, the start city.
         /// </summary>
-        /// <param name="cityName">The city from which to start.</param>
+        /// <param name="cityName">Name of the searched city</param>
         /// <returns></returns>
-        public async Task<CitiesModel> GetCityByName(string cityName)
+        public async Task<CitiesModel> GetCityByNameAsync(string cityName)
         {
             try
             {
                 var saveCity = await _cityService.GetAllAsync();
                 foreach (Cities city in saveCity)
                 {
-                    if (city.CityName.Contains(cityName))
+                    if (RemoveDiacritics(RemoveDelimiter(city.CityName)).Contains(cityName))
                     {
                         var citySave = new CitiesModel
                         {
@@ -187,12 +181,11 @@ namespace Navigation.Business.Logic.Implementations
 
                 return null;
 
-
             }
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesLogic class - GetCityByName method!"), exception);
+                   string.Format("Error in CitiesLogic class - GetCityByNameAsync method!"), exception);
             }
         }
 
@@ -201,7 +194,7 @@ namespace Navigation.Business.Logic.Implementations
         /// </summary>
         /// <param name="cities">Document that will be updated in Cities collection.</param>
         /// <param name="id">The provided search criteria.</param>
-        public async Task<bool> UpdateCityAsync(CitiesModel cities,string id)
+        public async Task<bool> UpdateCityAsync(CitiesModel cities, string id)
         {
             try
             {
@@ -218,7 +211,7 @@ namespace Navigation.Business.Logic.Implementations
                     Id = cityFromDb.Id
                 };
 
-               
+
                 return await _cityService.UpdateAsync(city);
             }
 
@@ -230,5 +223,57 @@ namespace Navigation.Business.Logic.Implementations
         }
         #endregion
 
+        #region Private Methods
+        /// <summary>
+        /// Remove delimiters method by 2 criterias (- or space) of the searched city.
+        /// </summary>
+        /// <param name="cityName">Name of the searched city.</param>
+        /// <returns></returns>
+        private string RemoveDelimiter(string cityName)
+        {
+            string[] finalText;
+            string finalResult = "";
+
+            /* First letter of a string will be uppercase, but no change for the other letters. */
+            cityName = char.ToUpper(cityName[0]) + cityName.Substring(1).ToLower();
+            
+            /* Split operation. */
+            finalText = cityName.Split(new Char[] { '-', ' ' });
+            foreach (string word in finalText)
+            {
+                finalResult += word;
+            }
+
+            return finalResult;
+
+        }
+
+        /// <summary>
+        /// Convert <b>cityName</b> string that are in Romanian and the method is able to take out the 
+        /// Romanian accent marks in the letters while keeping the letter.
+        /// </summary>
+        /// <param name="cityName">Name of the searched city.</param>
+        /// <returns></returns>
+        private static string RemoveDiacritics(string cityName)
+        {
+            /* Indicates that a Unicode string is normalized using full canonical decomposition. */
+            var normalizedString = cityName.Normalize(NormalizationForm.FormD);
+            /* Represents a mutable string of characters. */
+            var stringBuilder = new StringBuilder();
+
+            foreach (var c in normalizedString)
+            {
+                var unicodeCategory = CharUnicodeInfo.GetUnicodeCategory(c);
+                if (unicodeCategory != UnicodeCategory.NonSpacingMark)
+                {
+                    stringBuilder.Append(c);
+                }
+            }
+
+            /* Indicates that a Unicode string is normalized using full canonical decomposition,
+             * followed by the replacement of sequences with their primary composites, if possible. */
+            return stringBuilder.ToString().Normalize(NormalizationForm.FormC);
+        }
+        #endregion
     }
 }

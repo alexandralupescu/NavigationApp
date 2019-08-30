@@ -4,19 +4,10 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using Navigation.Algorithm.Implementations;
 using Navigation.Algorithm.Interfaces;
 using Navigation.Business.Logic.Interfaces;
-using Navigation.DataAccess.Collections;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,56 +19,21 @@ namespace Navigation.Algorithm.Algorithms
     /// AStar represents the main class that will call the necessary methods to 
     /// run the A* pathfinding search algorithm.
     /// </summary>
-    public class AStar
+    public class AStar : Algorithm
     {
-        #region Private Members
-        /// <summary>
-        /// Used to access the data from the Business layer.
-        /// </summary>
-        private readonly ICitiesLogic _citiesLogic;
-        private readonly IDistancesLogic _distancesLogic;
-        #endregion
 
-        #region Constructor
+        #region Constructors
         /// <summary>
-        /// AStarAlgorithm constructor.
+        /// AStar constructor.
         /// </summary>
-        /// <param name="citiesLogic"></param>
-        /// <param name="distancesLogic"></param>
-        public AStar(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic)
+        /// <param name="citiesLogic">Access CitiesLogic methods from Business tier.</param>
+        /// <param name="distancesLogic">Access DistancesLogic methods from Business tier.</param>
+        public AStar(ICitiesLogic citiesLogic, IDistancesLogic distancesLogic) : base(citiesLogic, distancesLogic)
         {
-            _citiesLogic = citiesLogic;
-            _distancesLogic = distancesLogic;
         }
         #endregion
-
 
         #region Public Methods
-        /// <summary>
-        /// Method that is responsible for creating the graph. 
-        /// </summary>
-        /// <param name="graph"></param>
-        /// <returns></returns>
-        public async virtual Task CreateGraph(Graph graph)
-        {
-            /* Fills a Graph with Romania map information. */
-            /* The Graph contains Nodes that represents cities of Romania. */
-            IEnumerable<Cities> cities = await _citiesLogic.GetAllCitiesAsync();
-            foreach (Cities cityVar in cities)
-            {
-                Node cityNode = new Node(cityVar.CityName, null, cityVar.Latitude, cityVar.Longitude);
-                graph.AddNode(cityNode);
-            }
-
-            /* Nodes are vertexes in the Graph. Connections between Nodes are edges. */
-            /* Fills a Graph with edges between cities. */
-            IEnumerable<Distances> distances = await _distancesLogic.GetAllDistancesAsync();
-            foreach (Distances distanceVar in distances)
-            {
-                graph.AddUndirectedEdge(distanceVar.StartCity, distanceVar.DestinationCity, distanceVar.Distance);
-            }
-        }
-
         /// <summary>
         /// Method that is responsible for assembling the A* pathfinding algorithm.
         /// </summary>
@@ -117,7 +73,7 @@ namespace Navigation.Algorithm.Algorithms
         /// <summary>
         /// Method that is responsible for display the final route and total cost.
         /// </summary>
-        /// <param name="shorthestPath"></param>
+        /// <param name="shorthestPath">The result of A* pathfinding search.</param>
         /// <returns></returns>
         public List<string> DisplayPath(Path<Node> shorthestPath)
         {
@@ -137,7 +93,7 @@ namespace Navigation.Algorithm.Algorithms
                         finalList.Add(path.LastStep.Key);
                         finalList.Add(path.LastStep.Latitude.ToString());
                         finalList.Add(path.LastStep.Longitude.ToString());
-                        totalFinalCost = path.TotalCost * 0.98;
+                        totalFinalCost = path.TotalCost * 1.01;
                     }
                 }
 
@@ -167,6 +123,7 @@ namespace Navigation.Algorithm.Algorithms
 
             try
             {
+                /* Option 1: no intermediate city. */
                 if (destinationCity.Count() == 1)
                 {
                     targetList = await ResolveAlgorithm(startCity, destinationCity.First());
@@ -185,13 +142,12 @@ namespace Navigation.Algorithm.Algorithms
 
                         intermediateList = await ResolveAlgorithm(destinationCity[counter], destinationCity[counter + 1]);
                         totalCost += Double.Parse(intermediateList.Last());
-                        intermediateList.Remove(intermediateList.Last());
 
                         targetList = targetList.Concat(intermediateList).ToList();
+                        targetList.Remove(targetList.Last());
                     }
-                    
-                    targetList.Add(totalCost.ToString());
 
+                    targetList.Add((totalCost).ToString());
                     return targetList;
                 }
             }
@@ -208,9 +164,9 @@ namespace Navigation.Algorithm.Algorithms
         /// This is the method responsible for finding the shortest path between a start and destination cities 
         /// using the A* pathfinding search algorithm.
         /// </summary>
-        /// <typeparam name="TNode">The Node type instance</typeparam>
-        /// <param name="start">Start city</param>
-        /// <param name="destination">Destination city</param>
+        /// <typeparam name="TNode">The Node type instance.</typeparam>
+        /// <param name="start">Start city.</param>
+        /// <param name="destination">Destination city.</param>
         /// <param name="distance">Function which tells us the exact distance between two neighbours.</param>
         /// <param name="estimate">Function which tells us the estimated distance between the last node on a proposed path and the
         /// destination node.</param>
@@ -255,7 +211,6 @@ namespace Navigation.Algorithm.Algorithms
 
             return null;
         }
-
         #endregion
 
     }

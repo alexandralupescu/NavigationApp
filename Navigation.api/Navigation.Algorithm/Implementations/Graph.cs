@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using System;
 
@@ -19,20 +11,20 @@ using System;
 namespace Navigation.Algorithm.Implementations
 {
     /// <summary>
-    /// The Graph class represents a graph, which is composed of a collection of nodes and edges.  This Graph class
+    /// The Graph class represents a graph, which is composed of a collection of nodes and edges. This Graph class
     /// maintains its collection of nodes using the NodeList class, which is a collection of TNode objects.
     /// It delegates the edge maintenance to the TNode class.  The TNode class maintains the edge information using
     /// the adjacency list technique.
     /// </summary>
     public class Graph
     {
-        #region Private Member Variables
+        #region Private Members
         private NodeList _nodes;
         #endregion
 
-        #region Constructor
+        #region Constructors
         /// <summary>
-        /// Default constructor.  Creates a new Graph class instance.
+        /// Default constructor. Creates a new Graph class instance.
         /// </summary>
         public Graph()
         {
@@ -74,23 +66,6 @@ namespace Navigation.Algorithm.Implementations
             {
                 Node n = new Node(key, data);
                 _nodes.Add(n);
-                return n;
-            }
-            else
-            {
-                throw new ArgumentException("There already exists a node in the graph with key " + key);
-            }
-        }
-
-        public virtual Node AddNode(string key, object data, int x, int y)
-        {
-            /* Make sure the key is unique. */
-            if (!_nodes.ContainsKey(key))
-            {
-                Node n = new Node(key, data, x, y);
-
-                _nodes.Add(n);
-
                 return n;
             }
             else
@@ -148,7 +123,17 @@ namespace Navigation.Algorithm.Implementations
         /// exception is thrown.</remarks>
         public virtual void AddDirectedEdge(string uKey, string vKey)
         {
-            AddDirectedEdge(uKey, vKey, 0);
+            /* Get references to uKey and vKey. */
+            if (_nodes.ContainsKey(uKey) && (_nodes.ContainsKey(vKey)))
+            {
+                AddDirectedEdge(uKey, vKey, 0);
+            }
+            else
+            {
+                /* One or both of the nodes were not found in the graph. */
+                throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
+            }
+            
         }
 
         /// <summary>
@@ -166,9 +151,9 @@ namespace Navigation.Algorithm.Implementations
             {
                 AddDirectedEdge(_nodes[uKey], _nodes[vKey], cost);
             }
-
             else
             {
+                /* One or both of the nodes were not found in the graph. */
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
             }
 
@@ -183,7 +168,18 @@ namespace Navigation.Algorithm.Implementations
         /// exception is thrown.</remarks>
         public virtual void AddDirectedEdge(Node u, Node v)
         {
-            AddDirectedEdge(u, v, 0);
+            /* Make sure u and v are Nodes in this graph. */
+            if (_nodes.ContainsKey(u.Key) && _nodes.ContainsKey(v.Key))
+            {
+                /* Add an edge from u -> v. */
+                AddDirectedEdge(u, v, 0);
+            }
+            else
+            {
+                /* One or both of the nodes were not found in the graph. */
+                throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
+            }
+               
         }
 
         /// <summary>
@@ -218,7 +214,16 @@ namespace Navigation.Algorithm.Implementations
         /// exception is thrown.</remarks>
         public virtual void AddUndirectedEdge(string uKey, string vKey)
         {
-            AddUndirectedEdge(uKey, vKey, 0);
+            /* Get references to uKey and vKey. */
+            if (_nodes.ContainsKey(uKey) && _nodes.ContainsKey(vKey))
+            {
+                AddUndirectedEdge(uKey, vKey, 0);
+            }
+            else
+            {
+                /* One or both of the nodes were not found in the graph. */
+                throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
+            }               
         }
 
         /// <summary>
@@ -236,6 +241,7 @@ namespace Navigation.Algorithm.Implementations
             }
             else
             {
+                /* One or both of the nodes were not found in the graph. */
                 throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
             }
 
@@ -248,7 +254,17 @@ namespace Navigation.Algorithm.Implementations
         /// exception is thrown.</remarks>
         public virtual void AddUndirectedEdge(Node u, Node v)
         {
-            AddUndirectedEdge(u, v, 0);
+            /* Make sure u and v are Nodes in this graph. */
+            if (_nodes.ContainsKey(u.Key) && _nodes.ContainsKey(v.Key))
+            {
+                /* Add an edge from u -> v. */
+                AddUndirectedEdge(u, v, 0);
+            }
+            else
+            {
+                /* One or both of the nodes were not found in the graph. */
+                throw new ArgumentException("One or both of the nodes supplied were not members of the graph.");
+            }
         }
 
         /// <summary>

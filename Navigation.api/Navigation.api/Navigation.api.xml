@@ -1,0 +1,266 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>Navigation.api</name>
+    </assembly>
+    <members>
+        <member name="T:Navigation.api.Controllers.AStarController">
+            <summary>
+            AStarController is responsible for controlling the algorithm flow execution.
+            </summary>
+            <remarks>
+            The Controller is responsible for controlling the application logic and acts as the 
+            coordinator between the View and the Model. The Controller receives an input from 
+            the users via the View, then processes the user's data with the help of Model and 
+            passes the results back to the View.
+            </remarks>
+        </member>
+        <member name="F:Navigation.api.Controllers.AStarController._citiesLogic">
+            <summary>
+            Used to access the data from the Business layer.
+            </summary>
+        </member>
+        <member name="M:Navigation.api.Controllers.AStarController.#ctor(Navigation.Business.Logic.Interfaces.ICitiesLogic,Navigation.Business.Logic.Interfaces.IDistancesLogic)">
+            <summary>
+            AStarController constructor.
+            </summary>
+            <remarks>
+            AStarController has a dependency on ICitiesLogic because it delegates some responsabilities 
+            to CitiesLogic class, has a dependency on IDistancesLogic because it delegates some responsabilities 
+            to DistancesLogic class and has also a dependency on AStar class.
+            </remarks>
+            <param name="citiesLogic">Used to access the data from the Business layer.</param>
+            <param name="distancesLogic">Used to access the data from the Business layer.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.AStarController.GetAStarResult(System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            GET method will return the result of A* pathfinding search algorithm with an intermediate city.
+            </summary>
+            <param name="startCity">The city from which the user will start.</param>
+            <param name="destinationCity">The city which user will arrive.</param>
+        </member>
+        <member name="T:Navigation.api.Controllers.CitiesController">
+            <summary>
+            CitiesController is responsible for controlling the way that a user interacts with the application.
+            </summary>
+            <remarks>
+            The Controller is responsible for controlling the application logic and acts as the 
+            coordinator between the View and the Model. The Controller receives an input from 
+            the users via the View, then processes the user's data with the help of Model and 
+            passes the results back to the View.
+            </remarks>
+        </member>
+        <member name="F:Navigation.api.Controllers.CitiesController._citiesLogic">
+            <summary>
+            Used to access the data from the Business layer.
+            </summary>
+        </member>
+        <member name="M:Navigation.api.Controllers.CitiesController.#ctor(Navigation.Business.Logic.Interfaces.ICitiesLogic)">
+            <summary>
+            CitiesController constructor.
+            </summary>
+            <remarks>
+            CitiesController has a dependency on ICitiesLogic because it delegates some 
+            responsabilities to CitiesLogic class.
+            </remarks>
+            <param name="citiesLogic">Used to access the data from the Business layer.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.CitiesController.Get">
+            <summary>
+            The GET method requests a representation of the specified resource.
+            </summary>
+            <remarks>
+            GET method will return to user the list of the cities.
+            </remarks>
+        </member>
+        <member name="M:Navigation.api.Controllers.CitiesController.Get(System.String)">
+            <summary>
+            The GET method requests a representation of the specified resource matching the provided search criteria.
+            </summary>
+            <remarks>
+            GET method will return to user a specific city that will match the criteria <b>id</b>.
+            </remarks>
+            <param name="id">The matching criteria for request.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.CitiesController.Post(Navigation.Business.Models.CitiesModel)">
+            <summary>
+            The POST method is used to submit a new document to the specified resource.
+            </summary>
+            <remarks>
+            POST method will submit a new city document in Cities collection.
+            </remarks>
+            <param name="city">Entity that will be submited in Cities collection.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.CitiesController.Delete(System.String)">
+            <summary>
+            The DELETE method deletes the specified resource that matches the provided search criteria.
+            </summary>
+            <remarks>
+            DELETE method deletes a document from Cities collection that matches the provided search criteria.
+            </remarks>
+            <param name="id">The matching criteria for delete.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Navigation.api.Controllers.CitiesController.Put(Navigation.Business.Models.CitiesModel,System.String)">
+            <summary>
+            The PUT method replaces all current representations of the target resource with the request payload.
+            </summary>
+            <remarks>
+            PUT method updates a document from Cities collection.
+            </remarks>
+            <param name="city">Entity that will be updated in Cities collection.</param>
+            <param name="id">The matching criteria for update.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.CitiesController.GetCityInfo(System.String)">
+            <summary>
+            The GET method requests a representation of the specified resource matching the provided search criteria.
+            </summary>
+            <remarks>
+            GET method will return to user a specific city that will match the criteria (the name of the city from which to start).
+            </remarks>
+            <param name="city">The matching criteria for request.</param>
+        </member>
+        <member name="T:Navigation.api.Controllers.DistancesController">
+            <summary>
+            A controller is responsible for controlling the way that a user interacts with the application.
+            </summary>
+            <remarks>
+            The Controller is responsible for controlling the application logic and acts as the 
+            coordinator between the View and the Model. The Controller receives an input from 
+            the users via the View, then processes the user's data with the help of Model and 
+            passes the results back to the View.
+            </remarks>
+        </member>
+        <member name="F:Navigation.api.Controllers.DistancesController._distancesLogic">
+            <summary>
+             Used to access the data from the Business layer.
+            </summary>
+        </member>
+        <member name="M:Navigation.api.Controllers.DistancesController.#ctor(Navigation.Business.Logic.Interfaces.IDistancesLogic)">
+            <summary>
+            DistancesController constructor.
+            </summary>
+            <remarks>
+            DistancesController has a dependency on IDistancesLogic because it delegates some responsabilities to DistancesLogic class.
+            </remarks>
+            <param name="distancesLogic">Used to access the data from the Business layer.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.DistancesController.Get">
+            <summary>
+            The GET method requests a representation of the specified resource.
+            </summary>
+            <remarks>
+            GET method will return to user all the distances from the database.
+            </remarks>
+        </member>
+        <member name="M:Navigation.api.Controllers.DistancesController.Get(System.String)">
+            <summary>
+            The GET method requests a representation of the specified resource matching the provided search criteria.
+            </summary>
+            <remarks>
+            GET method will return to user a specific distance that will match the criteria <b>Id</b>.
+            </remarks>
+            <param name="id">The matching criteria for request.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.DistancesController.Post(Navigation.Business.Models.DistancesModel)">
+            <summary>
+            The POST method is used to submit a new document to the specified resource.
+            </summary>
+            <remarks>
+            POST method will submit a new distance document in Distances collection.
+            </remarks>
+            <param name="distance">Entity that will be submited in Distances collection.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.DistancesController.Delete(System.String)">
+            <summary>
+            The DELETE method deletes the specified resource that matches the provided search criteria.
+            </summary>
+            <remarks>
+            DELETE method deletes a document from Distances collection that matches the provided search criteria.
+            </remarks>
+            <param name="id">The matching criteria for delete.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.DistancesController.Put(Navigation.Business.Models.DistancesModel,System.String)">
+            <summary>
+            The PUT method replaces all current representations of the target resource with the request payload.
+            </summary>
+            <remarks>
+            PUT method updates a document from Distances collection.
+            </remarks>
+            <param name="distance">Entity that will be updated in Distances collection.</param>
+            <param name="id">The matching criteria for update.</param>
+            <returns></returns>
+        </member>
+        <member name="M:Navigation.api.Controllers.DistancesController.GetRoadDistance(System.String,System.String)">
+            <summary>
+            The GET method requests a representation of the specified resource matching the provided search criteria.
+            In our case the provided search criteria is the start city and the stop city.
+            </summary>
+            /// <remarks>
+            GET method will return to user a specific road distance that will match the criteria <b>startCity</b> and <b>stopCity</b>.
+            </remarks>
+            <param name="startCity">The city from which to start.</param>
+            <param name="destinationCity">The city we have to reach.</param>
+        </member>
+        <member name="T:Navigation.api.Controllers.NBAStarController">
+            <summary>
+            NBAStarController is responsible for controlling the algorithm flow execution.
+            </summary>
+            <remarks>
+            The Controller is responsible for controlling the application logic and acts as the 
+            coordinator between the View and the Model. The Controller receives an input from 
+            the users via the View, then processes the user's data with the help of Model and 
+            passes the results back to the View.
+            </remarks>
+        </member>
+        <member name="M:Navigation.api.Controllers.NBAStarController.#ctor(Navigation.Business.Logic.Interfaces.ICitiesLogic,Navigation.Business.Logic.Interfaces.IDistancesLogic)">
+            <summary>
+            NBAStarController constructor.
+            </summary>
+            <remarks>
+            AStarController has a dependency on ICitiesLogic because it delegates some responsabilities 
+            to CitiesLogic class, has a dependency on IDistancesLogic because it delegates some responsabilities 
+            to DistancesLogic class and has also a dependency on NBAStar class.
+            </remarks>
+            <param name="citiesLogic">Used to access the data from the Business layer.</param>
+            <param name="distancesLogic">Used to access the data from the Business layer.</param>
+        </member>
+        <member name="M:Navigation.api.Controllers.NBAStarController.GetNBAStarResult(System.String,System.Collections.Generic.List{System.String})">
+            <summary>
+            GET method will return the result of NBA* pathfinding search algorithm with an intermediate city.
+            </summary>
+            <param name="startCity">The city from which the user will start.</param>
+            <param name="destinationCity">The city which user will arrive.</param>
+        </member>
+        <member name="T:Navigation.api.Startup">
+            <summary>
+            ASP.NET Core application must include Startup class. As the name suggests, it is executed first 
+            when the application starts. Startup class includes two public methods: ConfigureServices and Configure.
+            </summary>
+        </member>
+        <member name="M:Navigation.api.Startup.#ctor(Microsoft.Extensions.Configuration.IConfiguration)">
+            <summary>
+            Constructor that contains the instance of an IConfiguration object.
+            </summary>
+            <param name="configuration">Set of value application configuration properties.</param>
+        </member>
+        <member name="P:Navigation.api.Startup.Configuration">
+            <summary>
+            Gets a configuration value.
+            </summary>
+        </member>
+        <member name="M:Navigation.api.Startup.ConfigureServices(Microsoft.Extensions.DependencyInjection.IServiceCollection)">
+            <summary>
+            This method gets called by the runtime. Use this method to add services to the container.
+            </summary>
+            <param name="services">Specifies the contract for a collection of service descriptors.</param>
+        </member>
+        <member name="M:Navigation.api.Startup.Configure(Microsoft.AspNetCore.Builder.IApplicationBuilder,Microsoft.AspNetCore.Hosting.IHostingEnvironment)">
+            <summary>
+            // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+            </summary>
+            <param name="app">Provides the mechanisms to configure an application's request pipeline.</param>
+            <param name="env">Provides information about the web hosting environment an application is running on.</param>
+        </member>
+    </members>
+</doc>

@@ -4,20 +4,11 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using Microsoft.AspNetCore.Mvc;
 using Navigation.Business.Logic.Interfaces;
 using Navigation.Business.Models;
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace Navigation.api.Controllers
@@ -44,7 +35,7 @@ namespace Navigation.api.Controllers
         private readonly ICitiesLogic _citiesLogic;
         #endregion
 
-        #region Constructors
+        #region Constructor
         /// <summary>
         /// CitiesController constructor.
         /// </summary>
@@ -77,7 +68,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                    string.Format("Error in CitiesController - Get() method!"), exception);
+                    string.Format("Error in CitiesController - Get method!"), exception);
             }
         }
 
@@ -99,7 +90,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - Get(id) method!"), exception);
+                   string.Format("Error in CitiesController - Get (by id) method!"), exception);
             }
         }
 
@@ -121,7 +112,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - Post(city) method!"), exception);
+                   string.Format("Error in CitiesController - Post  method!"), exception);
             }
         }
 
@@ -146,7 +137,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - Delete(id) method!"), exception);
+                   string.Format("Error in CitiesController - Delete method!"), exception);
             }
         }
 
@@ -170,7 +161,7 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - Put(city,id) method!"), exception);
+                   string.Format("Error in CitiesController - Put method!"), exception);
             }
         }
 
@@ -189,7 +180,7 @@ namespace Navigation.api.Controllers
                 bool exists = await _citiesLogic.FindCityNameAsync(city);
                 if(exists)
                 {
-                    var getCityInfo = await _citiesLogic.GetCityByName(city);
+                    var getCityInfo = await _citiesLogic.GetCityByNameAsync(city);
                     return new OkObjectResult(getCityInfo);
                 }
 
@@ -200,10 +191,9 @@ namespace Navigation.api.Controllers
             catch (Exception exception)
             {
                 throw new Exception(
-                   string.Format("Error in CitiesController - GetCityInfo(city) method!"), exception);
+                   string.Format("Error in CitiesController - GetCityInfo method!"), exception);
             }
         }
-        
         #endregion
 
     }

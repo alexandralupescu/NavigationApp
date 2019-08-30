@@ -4,14 +4,6 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using Microsoft.Extensions.Configuration;
 using MongoDB.Driver;
@@ -66,10 +58,10 @@ namespace Navigation.DataAccess.Services
 
         #region Public Methods
         /// <summary>
-        ///  Inserts the provided object as a new document in the collection.
+        /// Inserts the provided object as a new document in the collection.
         /// </summary>
         /// <param name="document">Document that will be submited in a specific collection.</param>
-        /// <returns>Returns no value, except the awaitable Task. If a record will not be added, it will generate an Exception.</returns>
+        /// <returns>Returns no value, except the awaitable Task. If a record will not be added, it will generate an exception.</returns>
         public async Task CreateAsync(T document)
         {
             try
@@ -91,9 +83,9 @@ namespace Navigation.DataAccess.Services
         {
             try
             {
-                FilterDefinition<T> filter = Builders<T>.Filter.Eq("Id", id);
+                FilterDefinition<T> filterResult = Builders<T>.Filter.Eq("Id", id);
                 DeleteResult deleteResult = await _collection
-                                                    .DeleteOneAsync(filter);
+                                                    .DeleteOneAsync(filterResult);
 
                 return deleteResult.IsAcknowledged
                         && deleteResult.DeletedCount > 0;
@@ -129,9 +121,9 @@ namespace Navigation.DataAccess.Services
         {
             try
             {
-                FilterDefinition<T> filter = Builders<T>.Filter.Eq(c => c.Id, id);
+                FilterDefinition<T> filterResult = Builders<T>.Filter.Eq(c => c.Id, id);
                 return _collection
-                        .Find(filter)
+                        .Find(filterResult)
                         .FirstOrDefaultAsync();
             }
             catch (Exception exception)

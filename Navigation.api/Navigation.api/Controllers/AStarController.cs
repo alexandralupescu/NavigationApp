@@ -4,21 +4,12 @@
  *  Copyright:   (c) 2019, Maria-Alexandra Lupescu                        *
  *  E-mail:      mariaalexandra.lupescu@yahoo.com                         *             
  *  Description: Apply heuristic search algorithms in travel planning     *
- *                                                                        *
- *                                                                        *
- *  This code and information is provided "as is" without warranty of     *
- *  any kind, either expressed or implied, including but not limited      *
- *  to the implied warranties of merchantability or fitness for a         *
- *  particular purpose. You are free to use this source code in your      *
- *  applications as long as the original copyright notice is included.    *
- *                                                                        *
  **************************************************************************/
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Navigation.Algorithm.Algorithms;
 using Navigation.Business.Logic.Interfaces;
@@ -47,14 +38,14 @@ namespace Navigation.api.Controllers
         private readonly AStar _aStar;
         #endregion
 
-        #region Constructors
+        #region Constructor
         /// <summary>
         /// AStarController constructor.
         /// </summary>
         /// <remarks>
         /// AStarController has a dependency on ICitiesLogic because it delegates some responsabilities 
         /// to CitiesLogic class, has a dependency on IDistancesLogic because it delegates some responsabilities 
-        /// to DistancesLogic class and has also a dependency on AStarAlgorithm class.
+        /// to DistancesLogic class and has also a dependency on AStar class.
         /// </remarks>
         /// <param name="citiesLogic">Used to access the data from the Business layer.</param>
         /// <param name="distancesLogic">Used to access the data from the Business layer.</param>
@@ -68,39 +59,62 @@ namespace Navigation.api.Controllers
 
         #region CRUD Methods
         /// <summary>
-        /// GET method will return the result of A* pathfinding search algorithm with an intermediate city.
+        /// GET method will return the result of A* pathfinding search algorithm with or without an intermediate city.
         /// </summary>
         /// <param name="startCity">The city from which the user will start.</param>
-        /// <param name="intermediateCity">An intermediate city that will be chosen by the user.</param>
         /// <param name="destinationCity">The city which user will arrive.</param>
         [HttpGet()]
-        public async Task<IActionResult> GetAStaResult(string startCity, [FromQuery]List<string> destinationCity)
+        public async Task<IActionResult> GetAStarResult(string startCity, [FromQuery]List<string> destinationCity)
         {
-            try
+
+            if (!destinationCity.Any())
             {
-                Stopwatch myTimer = new Stopwatch();
-                myTimer.Start();
+                return new BadRequestObjectResult("Please enter valid values for start and destination city");
+            }
+            else
+            {
+                /* Calculate algorithm execution time. */
+                long watch = Stopwatch.GetTimestamp();
                 List<string> list = await _aStar.GetAStarAsync(startCity, destinationCity);
-                myTimer.Stop();
+                double dif = (Stopwatch.GetTimestamp() - watch) * 1000.0 / Stopwatch.Frequency;
+
                 Dictionary<string, List<string>> waypoints = new Dictionary<string, List<string>>();
 
-                List<string> noDupes = list.Distinct().ToList();
-                
-
-                for (int i=0; i < noDupes.Count - 1; i= i + 3)
+                try
                 {
-                    waypoints.Add(i + "." + list[i], new List<string> { list[i + 1], list[i + 2] });
+
+                    if (destinationCity.Count() == 1)
+                    {
+                        List<string> noDupes = list.Distinct().ToList();
+
+                        for (int i = 0; i < noDupes.Count - 1; i = i + 3)
+                        {
+                            waypoints.Add(i + "." + list[i], new List<string> { list[i + 1], list[i + 2] });
+                        }
+
+                        waypoints.Add("finalCost", new List<string> { (Double.Parse(list[list.Count - 1])).ToString() });
+                    }
+                    else
+                    {
+                        List<string> noDupes = list.ToList();
+
+                        for (int i = 0; i < noDupes.Count - 1; i = i + 3)
+                        {
+
+                            waypoints.Add(i + "." + list[i], new List<string> { list[i + 1], list[i + 2] });
+                        }
+
+                        waypoints.Add("finalCost", new List<string> { (Double.Parse(list[list.Count - 1])).ToString() });
+                    }
+
+                    return new OkObjectResult(waypoints);
                 }
-
-                waypoints.Add("finalCost", new List<string> { list[list.Count-1] });
-                return new OkObjectResult(waypoints);
+                catch (Exception exception)
+                {
+                    throw new Exception(
+                      string.Format("Error in AStarController - GetAStarResult method!"), exception);
+                }
             }
-            catch (Exception exception)
-            {
-                throw new Exception(
-                  string.Format("Error in AStarController - GetAStaResult(startCity,destinationCity) method!"), exception);
-            }
-
         }
         #endregion
     }
